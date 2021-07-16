@@ -15,9 +15,11 @@ import (
 
 func main() {
 	err := godotenv.Load()
+
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
+
 	bucket := aws.String(os.Getenv("S3_BUCKET"))
 
 	s3Config := &aws.Config{
