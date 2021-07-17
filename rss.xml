@@ -1,0 +1,3013 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>harrisonmalone.dev blog</title>
+    <link>https://harrisonmalone.dev</link>
+    <description>👋</description>
+    <managingEditor>harrisonmalone@hey.com (Harrison Malone)</managingEditor>
+    <pubDate>Sat, 17 Jul 2021 15:21:53 +1000</pubDate>
+    <item>
+      <title>Blog Architecture Changes</title>
+      <link>https://harrisonmalone.dev/2021/07/blog-architecture-changes</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>What if I architect my blog like this:</p>
+<ul>
+<li>Blog just pulls in RSS feed to render content, titles, HTML etc all done on the server</li>
+<li>RSS built via build command that I can run on my local machine, it could also I guess be done automatically via a cron job but I don't think that it's super necessary</li>
+</ul>
+<p>Build command is pretty heavy, use Go for speed, this is how it would work:</p>
+<ol>
+<li>Fetch all files on S3</li>
+<li>Read their content</li>
+<li>Convert markdown to HTML</li>
+<li>Create RSS file</li>
+<li>Delete/add RSS file to <code>src</code> directory in blog client, deploy blog client to Netlify</li>
+</ol>
+<p>This process removes the need to have any backend. You still need to store files in some kind of cloud storage for backup purposes. S3 is suitable for this.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Sat, 17 Jul 2021 03:13:56 +0000</pubDate>
+    </item>
+    <item>
+      <title>Lessons Learnt From Package Consolidation</title>
+      <link>https://harrisonmalone.dev/2021/07/lessons-learnt-from-package-consolidation</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Things I learnt from frontend consolidation work:</p>
+<ul>
+<li>Checking for <code>nil</code> in Go using a pointer, sending back only certain key value pairs in proto response from RPC, <a href="https://github.com/99designs/create/pull/1056">PR</a></li>
+<li><code>!</code> makes field mandatory in GraphQL schema</li>
+<li><code>@gomodel</code> directive like this</li>
+</ul>
+<pre><code>type PackagePriceRange @goModel(model: &quot;github.com/99designs/sdk/go/create.PriceRange&quot;)
+</code></pre>
+<p>the <code>PriceRange</code> part in the model string will link up with whatever is defined in <a href="https://github.com/99designs/create/blob/d589f4bf51d1b61794ab34f7c9769afec9a762e5/model/product.go#L82">backend models</a>, you'll actually be able to find the definition in SDK</p>
+<ul>
+<li>If query field needs custom resolver which can happen automatically from <code>gqlgen</code> or based on <code>@goField(forceResolver: true)</code> you click through where the error is looking at the return of the resolver definition, you should find a method signature that needs to be implemented in a <a href="https://github.com/99designs/frontend/blob/master/backend/graph/createpackageview.go">file like this</a> as a method receiver</li>
+<li>When digging deep into nested object and checking for truthy</li>
+</ul>
+<pre><code class="language-js">if (packages.packagesByKeys[index].view.priceRange) {}
+</code></pre>
+<p>TypeScript complains, it prefers you to define a variable</p>
+<pre><code>const priceRange = packages.packagesByKeys[index].view.priceRange;
+</code></pre>
+<p>and then check for truthy</p>
+<pre><code>if (priceRange) {}
+</code></pre>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Fri, 16 Jul 2021 02:25:29 +0000</pubDate>
+    </item>
+    <item>
+      <title>Engineering Expectations</title>
+      <link>https://harrisonmalone.dev/2021/07/engineering-expectations</link>
+      <description></description>
+      <content:encoded><![CDATA[<blockquote>
+<p>What are three expectations I have of myself as an engineer?</p>
+</blockquote>
+<ul>
+<li>Always be inquisitive , ask questions</li>
+<li>Accept feedback, listen to advice and apply it</li>
+<li>Ensure your code works and is tested</li>
+</ul>
+<blockquote>
+<p>What are three expectations I have of my teammates who are engineers?</p>
+</blockquote>
+<ul>
+<li>Honesty</li>
+<li>Open to pairing or answer questions on Slack, approachable</li>
+<li>Care about your wellbeing</li>
+</ul>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 14 Jul 2021 23:38:45 +0000</pubDate>
+    </item>
+    <item>
+      <title>I Completed Super Mario Odyssey</title>
+      <link>https://harrisonmalone.dev/2021/07/i-completed-super-mario-odyssey</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I finished Super Mario Odyssey! Here is me in Peaches Kingdom.</p>
+<p><img src="https://hm-blog-images.s3.ap-southeast-2.amazonaws.com/super_mario_odyssey.JPG" alt=""></p>
+<p>The game was excellent and worthy of all the praise it has in reviews online. I think my favourite kingdoms were the Luncheon Kingdom and Lost Kingdom. They were just beautifully designed worlds with just enough challenge to be stimulated but not too frustrated.</p>
+<p>I think I now somewhat understand the appeal of other 3D Mario games like Super Mario 64 and Super Mario Galaxy and would like to play these one day.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 14 Jul 2021 03:51:15 +0000</pubDate>
+    </item>
+    <item>
+      <title>Recipes</title>
+      <link>https://harrisonmalone.dev/2021/07/recipes</link>
+      <description></description>
+      <content:encoded><![CDATA[<h3>Creamy spiced pumpkin soup with red lentils</h3>
+<h4>Ingredients</h4>
+<h5>Soup</h5>
+<ul>
+<li>1 tbsp olive oil</li>
+<li>1 brown onion, coarsely chopped</li>
+<li>2 garlic cloves, crushed</li>
+<li>2 tsp finely grated ginger</li>
+<li>2 tsp ground cumin</li>
+<li>2 tsp ground coriander</li>
+<li>1 tsp ground turmeric</li>
+<li>800g butternut pumpkin, seeded, peeled, coarsely chopped</li>
+<li>2 carrots, peeled, coarsely chopped</li>
+<li>1/2 cup (100g) red lentils</li>
+<li>4 cups (1L) vegetable or chicken stock</li>
+<li>1/2 cup (125ml) thickened cream</li>
+</ul>
+<h5>Spiced chickpeas</h5>
+<ul>
+<li>1 tbsp olive oil</li>
+<li>400g can chickpeas, rinsed, drained</li>
+<li>1 tsp ground cumin</li>
+<li>1/2 tsp ground coriander</li>
+<li>1/2 tsp ground paprika</li>
+<li>1/2 tsp ground turmeric</li>
+</ul>
+<h4>Method</h4>
+<p>Heat the oil in a large saucepan over medium heat. Add onion, garlic and ginger and cook, stirring, for 5 mins or until onion softens. Add cumin, ground coriander and turmeric and cook, stirring, for 30 secs or until aromatic.</p>
+<p>Add the pumpkin, carrot, lentils and stock to the pan. Bring to the boil. Reduce heat to medium-low. Cook, partially covered, stirring occasionally, for 30 mins or until the pumpkin and carrot are tender. Cool slightly.</p>
+<p>Meanwhile, to make the spiced chickpeas, heat oil in a frying pan over high heat. Add the chickpeas, cumin, coriander, paprika and turmeric. Cook, stirring, for 2-3 mins or until chickpeas are golden. Set aside too cool slightly.</p>
+<p>To make the coriander oil, place the coriander and oil in a blender and blend until smooth. Season.</p>
+<p>Use a stick blender to blend the pumpkin mixture until smooth. Season. Stir in half the cream. Divide among serving bowls. Drizzle with the coriander oil and remaining cream. Sprinkle with the spiced chickpeas.</p>
+<hr>
+<h3>Beef brisket</h3>
+<h4>Ingredients</h4>
+<h5>Beef brisket seasoning</h5>
+<ul>
+<li>4 pounds (2 kg) beef brisket</li>
+<li>2 teaspoons garlic powder</li>
+<li>1 teaspoon onion powder</li>
+<li>2 teaspoons paprika</li>
+<li>2 teaspoons salt</li>
+<li>1 teaspoon cracked black pepper</li>
+<li>1/2 teaspoon cumin</li>
+<li>1 teaspoon chili or Cayenne powder (optional)</li>
+<li>2 tablespoons olive oil</li>
+</ul>
+<h5>Sauce</h5>
+<ul>
+<li>2 cups (500ml) barbecue sauce</li>
+<li>3 tablespoons minced garlic</li>
+<li>2 tablespoons brown sugar</li>
+<li>2 tablespoons olive oil</li>
+<li>1 tablespoon Worcestershire sauce</li>
+<li>1/2 - 1 tablespoon cayenne pepper (optional for heat)</li>
+<li>1 teaspoon salt</li>
+</ul>
+<h4>Method</h4>
+<p>Spray inside of a 6-quart slow cooker with cooking spray. Place brisket in slow cooker bowl.</p>
+<p>Combine seasoning ingredients together and pour over the brisket. Drizzle with oil and rub the seasoning all over the brisket.</p>
+<p>Mix sauce ingredients together and completely cover brisket with half of the sauce. Refrigerate remaining sauce to use later.</p>
+<p>Cover brisket with lid and cook on low setting for 8-10 hours, or high setting for 4-5 hours.</p>
+<p>When brisket is tender, transfer onto an oven tray (or baking sheet), lined with parchment paper or foil.</p>
+<p>Pour 1/4 cup of juices from the slow cooker bowl into the remaining sauce. Baste brisket with sauce and broil (grill) in preheated oven at 400°F (220°C) for about 10 minutes or until beginning to char and crisp on the edges. Baste again and broil (grill) until sticky and charred on the edges.</p>
+<p>Rest for 10 minutes to allow the juices to recirculate back into the meat before serving.</p>
+<p>To serve, slice brisket thinly across the grain and serve with remaining barbecue sauce.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 12 Jul 2021 12:33:14 +0000</pubDate>
+    </item>
+    <item>
+      <title>Matts Food</title>
+      <link>https://harrisonmalone.dev/2021/07/matts-food</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Messaged Matt the other day and he got back to me with a few suggestions for places to eat in the city. I can use some of these for future dating ideas. Here is the list:</p>
+<ul>
+<li><a href="https://goo.gl/maps/jsg7KCNq3uDTTHbx7">Tipo00</a></li>
+<li><a href="https://goo.gl/maps/EU6TCoHHFYLCpyGX6">Osteria Ilaria</a></li>
+<li><a href="https://g.page/arurestaurant?share">Aru</a></li>
+<li><a href="https://goo.gl/maps/FGMkc3f3AQHXef9A7">Lesa</a></li>
+<li><a href="https://goo.gl/maps/qktRVi89T5eMnzpK6">Embla</a></li>
+<li><a href="https://g.page/Gasthausonqueen?share">Gasthaus</a></li>
+<li><a href="https://goo.gl/maps/PJBdGHhitq44zZ7p7">City Wine Shop</a></li>
+<li><a href="https://goo.gl/maps/XG7KFvjWf86rpisEA">The European</a></li>
+<li><a href="https://goo.gl/maps/eqG4tUcdmjN2c2SBA">Florentino</a></li>
+<li><a href="https://g.page/BottegaRestaurant?share">Bottega</a></li>
+<li><a href="https://goo.gl/maps/91xpN7rnr6FzpzvL8">Becco</a></li>
+<li><a href="https://g.page/TrattoriaEmiliaMelbourne?share">Trattoria Emilia</a></li>
+<li><a href="https://goo.gl/maps/2DCYoaa8Zi5kUaK98">Flower Drum</a></li>
+</ul>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 12 Jul 2021 11:59:11 +0000</pubDate>
+    </item>
+    <item>
+      <title>I Completed Breath Of The Wild</title>
+      <link>https://harrisonmalone.dev/2021/07/i-completed-breath-of-the-wild</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>After a couple of months of procrastination I finally finished <a href="https://en.wikipedia.org/wiki/The_Legend_of_Zelda:_Breath_of_the_Wild">The Legend of Zelda: Breath of the Wild</a>. A couple of thoughts:</p>
+<ul>
+<li>The first half of the game is a lot better than the second half, one of the first regions I explored in the game was <a href="https://www.zeldadungeon.net/breath-of-the-wild-walkthrough/zoras-domain/">Zora's Domain</a> and for me this was the most interesting part of the map with the best Divine Beast</li>
+<li>The final boss battle was a bit disappointing</li>
+<li>I kind of want to play again from the start, I assume this is what the developers kind of want you to do, they probably also want you to buy the DLC 💵</li>
+<li>That's me on top of Hyrule Castle</li>
+</ul>
+<p><img src="https://hm-blog-images.s3.ap-southeast-2.amazonaws.com/legend_of_zelda_botw.JPG" alt=""></p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Fri, 09 Jul 2021 08:18:57 +0000</pubDate>
+    </item>
+    <item>
+      <title>Contest Write Up</title>
+      <link>https://harrisonmalone.dev/2021/07/contest-write-up</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>This was one of the best <a href="https://99designs.atlassian.net/wiki/spaces/~798411430/pages/1978073410/Ugly+Duckling+Design+contest">diary write ups</a> of a contest experience that I've seen and explains the product really well. It's also very personal and touches on some of the things I felt too when running my contest like:</p>
+<ol>
+<li>Feeling a bit lost when filling out the brief, had to um and ah my way through it, giving some general direction to run with is difficult</li>
+<li>Feeling overwhelmed with the sheer amount of submissions, had like 40 submissions by the end</li>
+<li>Kind of unsure of what to say to different designers as feedback, towards the end was a bit easier to give feedback to the best designs but was also kind of ceebs as the final product didn't <em>have</em> to be perfect, can see how this is different in cases that are business critical</li>
+<li>Fun and delight talking with friends about the submissions, comparing different things, funny how people's tastes in design can differ so much</li>
+</ol>
+<p>Here is the final product.</p>
+<p><img src="https://hm-blog-images.s3.ap-southeast-2.amazonaws.com/childhood_home_copy.jpg" alt="childhood home"></p>
+<p>I could get it printed by <a href="https://www.vistaprint.com.au/photo-gifts/canvas-prints">Vistaprint</a> as a Canvas Print. Could also go to Officeworks? After doing some general browsing of their site it seems difficult to find what I'm after. Would probably have to go in store.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Fri, 09 Jul 2021 04:00:35 +0000</pubDate>
+    </item>
+    <item>
+      <title>Tracking Finances Better</title>
+      <link>https://harrisonmalone.dev/2021/07/tracking-finances-better</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>This is some documentation related to the way I'll track financial transactions from now on. I'm taking this more cautious approach as I need to start saving money. Here are the steps I need to take to ensure the data is correct.</p>
+<ol>
+<li>Export a CSV out of bank, make sure it's only a 1-2 week range as otherwise you'll forget what certain transactions are</li>
+<li>Add transaction data into <a href="https://docs.google.com/spreadsheets/d/1DM-YzZYIm04-yEMW8Xr16iXYnRTQJobzV_tkSSmPAjw/edit?usp=sharing">monthly sheet</a> named <code>&lt;Month&gt; &lt;Year&gt; &lt;Bank Account&gt;</code></li>
+<li>Categorise transactions</li>
+<li>If transaction is split with roommate add boolean</li>
+<li>Drag down split cost column</li>
+<li>Add my own split cost transactions to <a href="https://docs.google.com/spreadsheets/d/1KErcQdvQWXOApcOb_-UzCTJG52dDchwKFCkg0qwatmI/edit?usp=sharing">shared roommate spreadsheet</a>, use temp spreadsheet to format data correctly (amounts need to be positive)</li>
+<li>Add roommates split cost transactions to my monthly sheet, use temp spreadsheet to format data correctly (amounts need to be negative)</li>
+<li>Export monthly data out as CSV, name as <code>data.csv</code> in <code>~/Downloads</code> directory</li>
+<li>Convert CSV to JSON with <code>csv-to-json</code> executable</li>
+<li>Open money project in VSCode, go to <code>data.json</code> file</li>
+<li>Add copied JSON as a new month to data structure, the key is <!-- raw HTML omitted --> <!-- raw HTML omitted --> and you pass the array of transactions as a value</li>
+<li>Run <code>money</code> alias from command line to open web app to view data</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 05 Jul 2021 01:11:27 +0000</pubDate>
+    </item>
+    <item>
+      <title>Money Goals</title>
+      <link>https://harrisonmalone.dev/2021/07/money-goals</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>These goals apply from July to September.</p>
+<h3>Emma</h3>
+<ol>
+<li>$0 expenditure on clothes</li>
+<li>Aim for 2 meals out a week</li>
+<li>0 takeaway dinner a month</li>
+<li>$50 a week on groceries</li>
+</ol>
+<h3>Harry</h3>
+<ol>
+<li>$0 on games</li>
+<li>$300 per month on groceries</li>
+<li>Aim for 2 meals out a week</li>
+</ol>
+<p>We want to now read a book together on first home buying and talk about it on weekends. The aim is to learn about things like deposits, what to talk to the bank about and what things to look for in a house.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Sun, 04 Jul 2021 12:29:34 +0000</pubDate>
+    </item>
+    <item>
+      <title>Databases In Go</title>
+      <link>https://harrisonmalone.dev/2021/07/databases-in-go</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>After doing some work with a couple of different object modelling tools in the past few weeks I'm seeing that there's a lack of</p>
+<blockquote>
+<p>one package to rule them all</p>
+</blockquote>
+<p>like there is in both the <a href="https://github.com/rails/rails/tree/main/activerecord">Ruby</a> and <a href="https://github.com/Automattic/mongoose">JavaScript</a> communities.</p>
+<p>It makes me think that it might finally be time to learn some SQL. In my current job most of the code bases just work with the built in go package <code>database/sql</code> and execute SQL to make queries and structure the DB through migrations.</p>
+<p>I mean I know some SQL but not on a deeper level. It's probably a skill that is worth being proficient at as it's just so cross functional. If you're good at SQL you're valuable to:</p>
+<ol>
+<li>Software Engineers</li>
+<li>Data analytics</li>
+<li>Product teams</li>
+</ol>
+<p>It seems like a good way to go. There are <a href="http://go-database-sql.org/index.html">good docs</a> and probably some more fully fledged articles out there.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Thu, 01 Jul 2021 01:54:13 +0000</pubDate>
+    </item>
+    <item>
+      <title>Clean Code</title>
+      <link>https://harrisonmalone.dev/2021/07/clean-code</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>This is a summary of my thoughts on <a href="https://enos.itcollege.ee/~jpoial/oop/naited/Clean%20Code.pdf">Clean Code</a> divided up into chapters as we work our way through the book in book club.</p>
+<h3>Chapter 1</h3>
+<ul>
+<li>Huge code bases need clean code, liked the story about an app Bob used and it got worse and worse as the years went on</li>
+<li>Development teams eventually mutiny against management when code base is gross, but then you have this situation where old legacy code is maintained while new code is written, features need to be parallel, this takes a long time</li>
+<li>I like this quote a lot from <a href="https://en.wikipedia.org/wiki/Ward_Cunningham">Ward Cunningham</a></li>
+</ul>
+<blockquote>
+<p>You can call it beautiful code when the code also makes it look like the language was made for the problem</p>
+</blockquote>
+<ul>
+<li>The boy scouts rule</li>
+</ul>
+<blockquote>
+<p>Leave the campground cleaner than you found it</p>
+</blockquote>
+<ul>
+<li>This is why we need code reviews and tests and things that might seem to be slowing development down</li>
+<li>Learning from past mistakes</li>
+</ul>
+<h3>Chapter 2</h3>
+<ul>
+<li>One letter variable names, also don't like the <code>T</code> in TypeScript generics</li>
+<li>I think learning good variable naming is even more important in dynamic languages, ruby sets some good standards</li>
+</ul>
+<h3>Chapter 3</h3>
+<blockquote>
+<p>If you use exceptions instead of returned error codes, then the error processing code can be separated from the happy path code and can be simplified</p>
+</blockquote>
+<ul>
+<li>In Go hard to handle errors like this, see lots of if <code>err != nil</code> which is kind of like error codes</li>
+</ul>
+<blockquote>
+<p>Only be one return statement in a function, no break or continue statements in a loop</p>
+</blockquote>
+<ul>
+<li>Really hard to do!</li>
+</ul>
+<blockquote>
+<p>So if you keep your functions small, then the occasional multiple return, break, or continue statement does no harm and can sometimes even be more expressive than the single entry single exit rule</p>
+</blockquote>
+<h3>Chapter 4</h3>
+<ul>
+<li>Journal comments, interesting that this was something that was done before source control, would have taken up a lot of time</li>
+</ul>
+<blockquote>
+<p>So commented-out code gathers like dregs at the bottom of a bad bottle of wine</p>
+</blockquote>
+<ul>
+<li>Author is flaming javadoc comments</li>
+<li>Code generation changes this idea of file sizes, you don't really know what's being generated</li>
+</ul>
+<h3>Chapter 5</h3>
+<blockquote>
+<p>We would like a source file to be like a newspaper article</p>
+</blockquote>
+<blockquote>
+<p>If the newspaper were just one long story containing a disorganised agglomeration of facts, dates, and names, then we simply would not read it</p>
+</blockquote>
+<ul>
+<li>Blank lines are super important and effect readability</li>
+<li>Wasting time on the where, not what when reading source code</li>
+</ul>
+<blockquote>
+<p>This is frustrating because you are trying to understand what the system does, but you are spending your time and mental energy on trying to locate and remember where the pieces are</p>
+</blockquote>
+<ul>
+<li>Nice little section on classes and instance variables</li>
+</ul>
+<blockquote>
+<p>The important thing is for the instance variables to be declared in one well-known place</p>
+</blockquote>
+<blockquote>
+<p>Everybody should know where to go to see the declarations</p>
+</blockquote>
+<ul>
+<li>The caller should be above the callee in dependent functions</li>
+<li>Strive to keep line lengths short, beyond 120 characters is careless</li>
+</ul>
+<h3>Chapter 6</h3>
+<ul>
+<li>Didn't know that <code>Active Record</code> had this specific meaning, data transfer object</li>
+</ul>
+<blockquote>
+<p>They often become the first in a series of translation stages that convert raw data in a database into objects in the application code</p>
+</blockquote>
+<h3>Chapter 7</h3>
+<ul>
+<li>Also agree with this</li>
+</ul>
+<blockquote>
+<p>So, the things that are hard for OO are easy for procedures, and the things that are hard for procedures are easy for OO!</p>
+</blockquote>
+<ul>
+<li>Error handling can be tedious</li>
+</ul>
+<blockquote>
+<p>Error handling is just one of those things that we all have to do when we program</p>
+</blockquote>
+<ul>
+<li>Nods to this</li>
+</ul>
+<blockquote>
+<p>Many code bases are completely dominated by error handling. When I say dominated, I don’t mean that error handling is all that they do. I mean that it is nearly impossible to see what the code does because of all of the scattered error handling. Error handling is important, but if it obscures logic, it’s wrong.</p>
+</blockquote>
+<blockquote>
+<p>If you work in a code base with code like this, it might not look all that bad to you, but it is bad! When we return null, we are essentially creating work for ourselves and foisting problems upon our callers.</p>
+</blockquote>
+<h3>Chapter 8</h3>
+<ul>
+<li>Java based solution, returning empty list example</li>
+<li>This is an interesting way to test out 3rd party code</li>
+</ul>
+<blockquote>
+<p>Instead of experimenting and trying out the new stuff in our production code, we could write some tests to explore our understanding of the third-party code.</p>
+</blockquote>
+<blockquote>
+<p>Not only are learning tests free, they have a positive return on investment. When there are new releases of the third-party package, we run the learning tests to see whether there are behavioural differences.</p>
+</blockquote>
+<h3>Chapter 9</h3>
+<ul>
+<li>Testing chapter, Uncle Bob loves his testing</li>
+<li>No production code until write failing test, not sure if this is so useful in practise</li>
+</ul>
+<blockquote>
+<p>The sheer bulk of those tests, which can rival the size of the production code itself, can present a daunting management problem</p>
+</blockquote>
+<blockquote>
+<p>What this team did not realise was that having dirty tests is equivalent to, if not worse than, having no tests</p>
+</blockquote>
+<blockquote>
+<p>What makes tests readable? The same thing that makes all code readable: clarity, simplicity, and density of expression.</p>
+</blockquote>
+<ul>
+<li>Creating domain specific language for chunks of your testing, example would be kind of like what I did for <code>DismissJobButton</code></li>
+<li>The heating example was kind of interesting, individual letters represented toggle states</li>
+</ul>
+<blockquote>
+<p>minimise the number of asserts per concept and test just one concept per test function</p>
+</blockquote>
+<ul>
+<li>So I think having multiple asserts is okay sometimes so long as the concept is the same</li>
+</ul>
+<blockquote>
+<p>and on your laptop while riding home on the train without a network</p>
+</blockquote>
+<ul>
+<li>Not sure if this is possible?</li>
+</ul>
+<blockquote>
+<p>Unit tests should be written just before the production code that makes them pass. If you write tests after the production code, then you may find the production code to be hard to test. You may decide that some production code is too hard to test. You may not design the production code to be testable.</p>
+</blockquote>
+<ul>
+<li>Again this is something that I can't fully get on board with</li>
+</ul>
+<h3>Chapter 10</h3>
+<ul>
+<li>This is going to be all in on OOP and Java best practises</li>
+</ul>
+<blockquote>
+<p>If we cannot derive a concise name for a class, then it’s likely too large</p>
+</blockquote>
+<blockquote>
+<p>For example, class names including weasel words like Processor or Manager or Super often hint at unfortunate aggregation of responsibilities</p>
+</blockquote>
+<blockquote>
+<p>Getting software to work and making software clean are two very different activities. Most of us have limited room in our heads, so we focus on getting our code to work more than organisation and cleanliness.</p>
+</blockquote>
+<blockquote>
+<p>The problem is that too many of us think that we are done once the program works</p>
+</blockquote>
+<ul>
+<li>This is all very true, holds up well</li>
+</ul>
+<blockquote>
+<p>Do you want your tools organised into toolboxes with many small drawers each containing well-defined and well-labeled components? Or do you want a few drawers that you just toss everything into?</p>
+</blockquote>
+<ul>
+<li>Great metaphor</li>
+</ul>
+<blockquote>
+<p>If we promoted those four variables to instance variables of the class, then we could extract the code without passing any variables at all.</p>
+</blockquote>
+<ul>
+<li>This is something I slowly learnt when creating ruby classes</li>
+</ul>
+<blockquote>
+<p>Classes should be open for extension but closed for modification.</p>
+</blockquote>
+<h3>Chapter 11</h3>
+<blockquote>
+<p>This means we can start a software project with a &quot;naively simple&quot; but nicely decoupled architecture, delivering working user stories quickly, then adding more infrastructure as we scale up. Some of the world’s largest Web sites have achieved very high availability and performance, using sophisticated data caching, security, virtualisation, and so forth, all done efficiently and flexibly because the minimally coupled designs are appropriately simple at each level of abstraction and scope.</p>
+</blockquote>
+<blockquote>
+<p>We all know it is best to give responsibilities to the most qualified persons. We often forget that it is also best to postpone decisions until the last possible moment. This isn’t lazy or irresponsible; it lets us make informed choices with the best possible information.</p>
+</blockquote>
+<ul>
+<li>When talking about using standards</li>
+</ul>
+<blockquote>
+<p>Building construction is a marvel to watch because of the pace at which new buildings are built (even in the dead of winter) and because of the extraordinary designs that are possible with today’s technology. Construction is a mature industry with highly optimised parts, methods, and standards that have evolved under pressure for centuries.</p>
+</blockquote>
+<ul>
+<li>Talked about DSLs, agree with him</li>
+</ul>
+<h3>Chapter 12</h3>
+<ul>
+<li>Yes to all these things</li>
+<li>Kind of a summary of many pieces from previous chapters</li>
+</ul>
+<blockquote>
+<p>The majority of the cost of a software project is in long-term maintenance. In order to minimise the potential for defects as we introduce change, it’s critical for us to be able to understand what a system does. As systems become more complex, they take more and more time for a developer to understand, and there is an ever greater opportunity for a misunderstanding. Therefore, code should clearly express the intent of its author. The clearer the author can make the code, the less time others will have to spend understanding it. This will reduce defects and shrink the cost of maintenance.</p>
+</blockquote>
+<h3>Chapter 13</h3>
+<ul>
+<li>Concurrency is hard</li>
+<li>A classic example of <em>why</em> concurrency</li>
+</ul>
+<blockquote>
+<p>Or consider a system that interprets large data sets but can only give a complete solution after processing all of them. Perhaps each data set could be processed on a different computer, so that many data sets are being processed in parallel.</p>
+</blockquote>
+<blockquote>
+<p>Concurrency can sometimes improve performance, but only when there is a lot of wait time that can be shared between multiple threads or multiple processors.</p>
+</blockquote>
+<ul>
+<li>The below quote is very true, async in React</li>
+</ul>
+<blockquote>
+<p>Concurrency bugs aren’t usually repeatable, so they are often ignored as one-offs instead of the true defects they are.</p>
+</blockquote>
+<ul>
+<li>Can you do this in React?</li>
+</ul>
+<blockquote>
+<p>Recommendation: Keep your concurrency-related code separate from other code</p>
+</blockquote>
+<ul>
+<li>This sounds like the JavaScript event loop</li>
+</ul>
+<blockquote>
+<p>This means producers must wait for free space in the queue before writing and consumers must wait until there is something in the queue to consume</p>
+</blockquote>
+<ul>
+<li>Philosophers and spaghetti metaphor</li>
+</ul>
+<blockquote>
+<p>Replace philosophers with threads and forks with resources and this problem is similar to many enterprise applications in which processes compete for resources. Unless carefully designed, systems that compete in this way can experience deadlock, livelock, throughput, and efficiency degradation.</p>
+</blockquote>
+<ul>
+<li>More good advice</li>
+</ul>
+<blockquote>
+<p>Write tests that have the potential to expose problems and then run them frequently, with different programatic configurations and system configurations and load. If tests ever fail, track down the failure. Don’t ignore a failure just because the tests pass on a subsequent run.</p>
+</blockquote>
+<blockquote>
+<p>Recommendation: Do not ignore system failures as one-offs.</p>
+</blockquote>
+<ul>
+<li>Interesting that multithreaded code behaves differently depending on platform</li>
+</ul>
+<h3>Chapter 14</h3>
+<ul>
+<li>Nice piece of Java followed by bad piece of Java</li>
+<li>Kind of hard to critique this apart from basic programming knowledge I have, what classes should look like</li>
+</ul>
+<blockquote>
+<p>If we have learned anything over the last couple of decades, it is that programming is a craft more than it is a science. To write clean code, you must first write dirty code and then clean it.</p>
+</blockquote>
+<blockquote>
+<p>We learned this truth in grade school when our teachers tried (usually in vain) to get us to write rough drafts of our compositions</p>
+</blockquote>
+<blockquote>
+<p>Although you can find plenty to complain about in this code, it’s really not that bad. It’s compact and simple and easy to understand. However, within this code it is easy to see the seeds of the later festering pile. It’s quite clear how this grew into the latter mess.</p>
+</blockquote>
+<blockquote>
+<p>The addition of just two more argument types had a massively negative impact on the code. It converted it from something that would have been reasonably maintainable into something that I would expect to become riddled with bugs and warts.</p>
+</blockquote>
+<ul>
+<li>Incrementally changing the code with TDD</li>
+</ul>
+<blockquote>
+<p>It is not enough for code to work. Code that works is often badly broken. Programmers who satisfy themselves with merely working code are behaving unprofessionally</p>
+</blockquote>
+<ul>
+<li>Find this kind of harsh 🤷‍♂️</li>
+</ul>
+<h3>Chapter 15</h3>
+<ul>
+<li>Looking at JUnit, testing framework</li>
+</ul>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Thu, 01 Jul 2021 00:55:37 +0000</pubDate>
+    </item>
+    <item>
+      <title>Gqlgen For My Backends</title>
+      <link>https://harrisonmalone.dev/2021/06/gqlgen-for-my-backends</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>On Monday night after I spent the day building a REST API in Go I decided to spin up something small with <code>gqlgen</code> and try and connect that to the ORM I'd been using that day in GORM.</p>
+<p>I followed <a href="https://www.howtographql.com/graphql-go/1-getting-started/">this tutorial</a> to get an app idea and here is <a href="https://github.com/harrisonmalone/hackernews-gqlgen">the code</a> as it stands. I do need to add some database methods that replicate Active Record like <code>save</code>. I'll do that some time later this week.</p>
+<p>It's honestly really quite easy to spin something up with the code generation that's provided. It could be from this point onwards my go to tool for making backends that talk to a client and a DB.</p>
+<p>Some of the things that I did notice were:</p>
+<ol>
+<li>You need to maintain both your GraphQL schema alongside models that correlate to whatever is in your DB. This simply can't be a one to one (as far as I know) and transforming data between GraphQL land and database is something that I think is one of the slightly annoying things you need to do when working in this space</li>
+<li>Inputs are strongly typed, validation is done via the GraphQL schema and not via models</li>
+<li>Go structs and GraphQL types so clearly emulate each other, probably one of the reasons why GraphQL and Go is such a popular stack</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Thu, 24 Jun 2021 00:41:43 +0000</pubDate>
+    </item>
+    <item>
+      <title>Experience With Selling Mac</title>
+      <link>https://harrisonmalone.dev/2021/06/experience-with-selling-mac</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>In the past week I sold my MacBook Pro 16 Inch (2019). I used the trade in your device service that Apple provides in Australia which is through the third party provider <a href="https://www.brightstar.com/">Brightstar</a>.</p>
+<p>I got $2260 back from an original purchase of $3479. I'm pretty happy with this considering the ease in which it was to sell it. I literally didn't have to leave the house, take any pictures or reply to messages from people on an online marketplace.</p>
+<p>The use of the computer equated to $1219 which is $110 per month. I used it for work almost everyday throughout this period so that I think is a fair amount.</p>
+<p>The resell-able nature of Mac's have to be one of their biggest advantages. It's awesome that you can get anything back for a device that you've used for months almost everyday.</p>
+<p>The question then becomes:</p>
+<blockquote>
+<p>What will I buy from Apple with the credit?</p>
+</blockquote>
+<p>I have all the things I need right now but I'll likely eventually spend the credit on:</p>
+<ol>
+<li>A new iPhone, my current iPhone XR is now almost at the 2 year mark (purchased 15th July 2019), it's still working great but it will eventually need to be replaced</li>
+<li>A new iMac, I would love to have a powerful iMac for home with a big screen but this is a long term purchase</li>
+<li>A new iPad, I watch a lot of videos and just generally browse the web on my Mac and iPhone but an iPad is the ideal device for this</li>
+<li>A new Apple Watch, my girlfriend has an Apple Watch and she loves it, would be handy for listening to music on the go and tracking workouts</li>
+</ol>
+<p>I think what else I've learnt from this experience is that a 13 inch laptop is the right size for me. I like moving my laptop around and bringing it places. The 16 inch is just too big.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 22 Jun 2021 06:00:02 +0000</pubDate>
+    </item>
+    <item>
+      <title>Testing 99 Pages With Lighthouse</title>
+      <link>https://harrisonmalone.dev/2021/06/testing-99-pages-with-lighthouse</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I chose to perform an audit on the <a href="https://99designs.com.au/briefs/facebook/create">Facebook package selection page</a>. I created this entire page and based it around <a href="https://99designs.com.au/briefs/square-online/create">what already existed for Square</a>.</p>
+<p>I audited the page in lighthouse and found that I got a score of:</p>
+<ul>
+<li>24 Performance</li>
+<li>90 Accessibility</li>
+<li>93 Best Practises</li>
+<li>90 SEO</li>
+</ul>
+<p>Here are some of the quick wins that would be fairly easy to implement:</p>
+<ol>
+<li><code>[role]</code> values are not valid, there is a <code>div</code> with a role of price that is incorrect</li>
+<li>Background and foreground colours do not have a sufficient contrast ratio, the orange and white colours on some <code>button</code> and <code>span</code> elements do not pass the contrast ratio threshold, the grey links in the <code>footer</code> also don't pass this test</li>
+</ol>
+<p>Here are some potentially trickier things to do:</p>
+<ol>
+<li>Tap targets are not sized appropriately, interactive elements like buttons and links should be large enough (48x48px), and have enough space around them, to be easy enough to tap without overlapping onto other elements, this applies to the hamburger menu and the site header</li>
+<li>Document does not have a meta description, can this be achieved with React helmet or or is it something to do with server side rendering?</li>
+</ol>
+<p>Here are some difficult things to do:</p>
+<ol>
+<li>Overall the performance metric was really low, performance is hard to improve once you have a large code base with lots of dependencies, I had a warning about IndexedDB not sure if anyone else had that</li>
+<li>Using code splitting which I believe we already do</li>
+<li>Inline JS and CSS, deferring loading of all non critical assets</li>
+<li>Remove unused CSS</li>
+</ol>
+<p>Overall Lighthouse is a good tool to measure certain aspects of your website but it can't be relied on as the <em>only</em> thing that matters.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 16 Jun 2021 23:39:29 +0000</pubDate>
+    </item>
+    <item>
+      <title>Go Lang Side Projects</title>
+      <link>https://harrisonmalone.dev/2021/06/go-lang-side-projects</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I need to define some side projects to work on that are written in Go. I've done the core parts of Applied Go and feel like now is a good time to work on some side projects considering it's the long weekend.</p>
+<p>This is what I'm thinking:</p>
+<ol>
+<li>
+<p>Terminal app</p>
+<ul>
+<li>What theme, think of some good apps students made in school</li>
+</ul>
+</li>
+<li>
+<p>JSON API</p>
+<ul>
+<li>Use <a href="https://github.com/gorilla/mux">mux</a> for routing</li>
+<li>Use SQLite for DB</li>
+<li>Use <a href="https://gorm.io/index.html">GORM</a> for ORM</li>
+<li>Deploy to actual box, maybe look at a <a href="https://medium.com/@elmashad/deploying-go-applications-using-docker-on-aws-e6e76e609b49">Docker deployment with ECS</a>, this would be the most useful for work</li>
+<li>Consume JSON with React app</li>
+</ul>
+</li>
+</ol>
+<p>I think I'm more interested in doing project #2 but it might be better to build something quick that's command line based.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Sun, 13 Jun 2021 01:19:07 +0000</pubDate>
+    </item>
+    <item>
+      <title>Apple Software Wishes 2021</title>
+      <link>https://harrisonmalone.dev/2021/06/apple-software-wishes-2021</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Excited for <a href="https://developer.apple.com/wwdc21/">WWDC</a>. Some things I'd be keen to see:</p>
+<ul>
+<li>Revamp to iPadOS, changes to multitasking and addition of pro apps, dream would be to see web development possible on it</li>
+<li>Better Apple Music apps</li>
+<li>Solidification of macOS, Big Sur in my experience has been pretty slow and buggy</li>
+<li>Updates to Mail.app</li>
+<li>Better files app on the iPad, full access to the file system</li>
+<li>Documentation improvements for Apple APIs</li>
+<li>watchOS improvements for developers, I'm kind of keen to get a watch at some point and want the selection of apps to be solid</li>
+<li>Announcement of different pricing model for apps that sell things, the 30% thing is super dodgy</li>
+</ul>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Thu, 10 Jun 2021 00:32:13 +0000</pubDate>
+    </item>
+    <item>
+      <title>React Testing Library</title>
+      <link>https://harrisonmalone.dev/2021/06/react-testing-library</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>This is quick post that summarizes <a href="https://testing-library.com/docs/react-testing-library/intro/">React Testing Library</a> (RTL) and how we use it at 99d.</p>
+<blockquote>
+<p>What is RTL?</p>
+</blockquote>
+<p>We use RTL for testing React components. The specific kind of tests it can perform are unit tests.</p>
+<p>RTL is known for being pretty easy to get started with. It works seamlessly with the test runner <a href="https://jestjs.io/">Jest</a> and is bundled with <a href="https://create-react-app.dev/">create-react-app</a> which is great as most React beginners will have a test environment ready to use without having to install new dependencies.</p>
+<blockquote>
+<p>Why do we write tests?</p>
+</blockquote>
+<p>We write tests to increase the confidence we have in our code implementation. The more confidence we have the more robust and maintainable our code is.</p>
+<p>Think about a situation where you create a new feature. Let's say that this feature is a popup box that appears when you click on a button. You write some RTL tests to ensure that this popup appears when this button is clicked and can be interacted with when it's visible. You ship the feature.</p>
+<p>6 months pass and some requirements change. A different developer is tasked with adding another form input to the popup box. The unit tests written months ago ensure that the changes the new developer makes will not effect the code implementation that already exists. The team can therefore work much more collaboratively to quickly iterate on features.</p>
+<blockquote>
+<p>When do we write tests?</p>
+</blockquote>
+<p>A new component that adds functionality to the 99d site usually means it's time to write a RTL unit test.</p>
+<p>As it's a unit test we're just focussed on testing small pieces of code in an isolated environment. Fetched data will be mocked. We don't care about what other components are doing.</p>
+<p>In RTL's case we usually just test one component and mock any data that's passed to the component as a prop or through context.</p>
+<blockquote>
+<p>What are some guiding principals of RTL?</p>
+</blockquote>
+<p>Like many testing libraries and frameworks RTL has <a href="https://testing-library.com/docs/guiding-principles">some strong opinions about the best way to test</a>. Probably the most important mantra that you'll see all the time in examples and documentation is &quot;write tests that closely resemble how your web pages are used&quot;.</p>
+<p>So what does this mean? Basically as a tester you should be thinking about how a user would interact with the code rather than how the code is written. The user doesn't care about props that pass through page data. They care if the correct text is on the page that provides them with some expected information. The user don't know about setting state. They care that they can fill out form inputs correctly.</p>
+<p>Thinking in terms of the user will help you write great RTL tests.</p>
+<blockquote>
+<p>Can you show me some code examples?</p>
+</blockquote>
+<p><a href="https://github.com/99designs/frontend/pull/3069">This PR</a> contained a bunch of <a href="https://github.com/99designs/frontend/blob/2819b4471395010b84563dfecfe1806b96330c1e/apps/spa/src/pages/browse-projects/DismissJobButton/DismissJobButton.test.tsx">RTL testing</a> that I'm pretty happy with.</p>
+<p>We're again using the example from before where a popup box appears when a button is clicked.</p>
+<pre><code class="language-js">describe(&quot;DismissJobButton&quot;, () =&gt; {
+  it(&quot;should show popup when 'Not interested' button is clicked and hide popup when 'Not interested' button is clicked again&quot;, () =&gt; {
+    render(
+      &lt;SnackbarProvider&gt;
+        &lt;MockedProvider&gt;
+          &lt;DismissJobButton jobId=&quot;35&quot; disabled={false} /&gt;
+        &lt;/MockedProvider&gt;
+      &lt;/SnackbarProvider&gt;
+    );
+    userEvent.click(screen.getByRole(&quot;button&quot;, { name: /not interested/i }));
+    const textContent = &quot;Let us know why you're not interested in this project&quot;;
+    expect(screen.queryByText(textContent)).toBeInTheDocument();
+    userEvent.click(screen.getByRole(&quot;button&quot;, { name: /not interested/i }));
+    expect(screen.queryByText(textContent)).not.toBeInTheDocument();
+  });
+});
+</code></pre>
+<p>A couple of points:</p>
+<ul>
+<li>We wrap all our unit tests in a describe block that usually contains the name of the component we're testing</li>
+<li>The <code>it</code> message should make sense in a sentence with what's passed to the describe</li>
+<li>We render a component mocking some props and context, this returns a DOM representation of the component</li>
+<li>Instead of using the <code>fireEvent</code> API we're instead using the <code>userEvent</code> which <a href="https://github.com/testing-library/user-event">better simulates real user events</a></li>
+<li>I'm using <code>screen</code> to avoid having to use the container returned from render</li>
+<li>I'm using <code>getByRole</code> which is <a href="https://testing-library.com/docs/queries/about/#priority">what the library recommends</a> using to query for elements, the reason for this recommendation is that it reflects the experience of all your users, including those that use assistive technologies</li>
+<li>I'm then asserting that a text element that's within the popup is in the document, <code>toBeInTheDocument</code> is a <a href="https://jestjs.io/docs/expect">jest matcher</a>, you can see all the available matchers in VSCode with autocompletion</li>
+<li>I'm then testing for the reverse as well, where a visible button is removed and we assert that the text is no longer in the document</li>
+</ul>
+<p>As there's some repetition here we can also abstract some on this into their own utility functions.</p>
+<pre><code class="language-js">const queryHeadingInPopup = () =&gt; {
+  const textContent = &quot;Let us know why you're not interested in this project&quot;;
+  return screen.queryByText(textContent);
+};
+
+const clickOnNotInterestedButton = () =&gt;
+  userEvent.click(screen.getByRole('button', { name: /not interested/i }));
+</code></pre>
+<p>This makes the querying and assertion code read a little better.</p>
+<pre><code class="language-js">clickOnNotInterestedButton();
+expect(queryHeadingInPopup()).toBeInTheDocument();
+clickOnNotInterestedButton();
+expect(queryHeadingInPopup()).not.toBeInTheDocument();
+</code></pre>
+<p>Something else you can do with RTL is fill out form inputs.</p>
+<pre><code class="language-js">const fillOutFormInputs = () =&gt; {
+  const { getByRole } = screen;
+  userEvent.click(getByRole('checkbox', { name: /i'm too busy/i }));
+  userEvent.click(getByRole('checkbox', { name: /too cheap/i }));
+  const input = getByRole('textbox', { name: /other/i });
+  const value = 'Need jobs that are more than $200';
+  userEvent.type(input, value);
+};
+</code></pre>
+<p>This function was used in this bigger test which is arguably more of an integration test 🤪.</p>
+<pre><code class="language-js">it(&quot;can click not interested button, check 2 checkboxes, click confirm button and then the popup is closed&quot;, async () =&gt; {
+  const mocks = [
+    {
+      request: {
+        query: Operations.DismissJob,
+        variables: {
+          id: &quot;36&quot;,
+          reason: [&quot;Too cheap,Looking for work over $200&quot;],
+        },
+      },
+      result: {
+        data: {
+          job: {
+            id: &quot;36&quot;,
+          },
+          interest: {
+            type: &quot;DISMISS&quot;,
+          },
+        },
+      },
+    },
+  ];
+  render(
+    &lt;SnackbarProvider&gt;
+      &lt;MockedProvider mocks={mocks}&gt;
+        &lt;DismissJobButton jobId=&quot;36&quot; disabled={false} /&gt;
+      &lt;/MockedProvider&gt;
+    &lt;/SnackbarProvider&gt;
+  );
+  clickOnNotInterestedButton();
+  const heading = queryHeadingInPopup();
+  expect(heading).toBeInTheDocument();
+  fillOutFormInputs();
+  clickOnConfirmButton();
+  await waitForElementToBeRemoved(heading);
+  expect(heading).not.toBeInTheDocument();
+});
+</code></pre>
+<p>It mocks the GraphQL mutation, renders the component, triggers a click on the button, checks if the header in the popup renders, fills out the form inputs, clicks on the submit button for the form, waits for the heading to be removed from the screen and then asserts that it's removed. The <code>waitForElementToBeRemoved</code> is a good one to remember for when dealing with any asynchronous behavior as this test does.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 02 Jun 2021 03:38:41 +0000</pubDate>
+    </item>
+    <item>
+      <title>Request For Comment At 99</title>
+      <link>https://harrisonmalone.dev/2021/06/request-for-comment-at-99</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>One of the tasks this week for Junior Engineers Program was to look at RFCs (Request For Comment) that have been initiated in 99 repositories. The brief was specifically to discuss:</p>
+<blockquote>
+<p>an RFC that you thought was good in a codebase owned by your team</p>
+</blockquote>
+<p>The RFC I've chosen to look at is regarding <a href="https://github.com/99designs/frontend/issues/2721">99d's UI Library</a> and I'm analyzing it based on the rubric set in this <a href="https://99designs.atlassian.net/wiki/spaces/DEV/pages/2258993794/RFCs+at+99">help document</a>.</p>
+<ol>
+<li>Identify who is involved in the change</li>
+</ol>
+<p>This isn't really specified but I guess it's inferred that these changes effect everyone who is working within the spa.</p>
+<ol start="2">
+<li>Summarize the change</li>
+</ol>
+<p>Whilst I'm not really familiar with what an nx library is I understand the point of these changes based on the description.</p>
+<blockquote>
+<p>move the core-components folder (currently apps/spa/src/libs/core-components) into a new Nx library @99designs/ui</p>
+</blockquote>
+<ol start="3">
+<li>Explain the motivation for making the change now</li>
+</ol>
+<p>The reason for making the change now is that the frontend is in a stable state and this kind of consolidation makes sense. It will clean up the code base and make it easier to import commonly used UI building components.</p>
+<ol start="4">
+<li>Identify the friction point</li>
+</ol>
+<p>Core components had funky import paths like this</p>
+<pre><code class="language-jsx">import { SolidButton } from 'libs/core-components/SolidButton/SolidButton/SolidButton';
+</code></pre>
+<p>whereas now it's this.</p>
+<pre><code class="language-jsx">import { SolidButton } from '@99designs/ui';
+</code></pre>
+<p>This is clearly documented.</p>
+<ol start="5">
+<li>List implementation options and their various trade offs</li>
+</ol>
+<p>The author went ahead and did a small spike <a href="https://github.com/99designs/frontend/issues/2721#issuecomment-779520137">documented in an issue comment</a>. There's basically some stumbling blocks whereby certain components have missing dependencies.</p>
+<ol start="6">
+<li>Recommend a solution</li>
+</ol>
+<p>Solution was just implemented in <a href="https://github.com/99designs/frontend/pull/2805">a PR</a>. Not sure if there was too much debate on different options.</p>
+<ol start="7">
+<li>Call out any unknowns/uncertainty</li>
+</ol>
+<p>This is addressed in the the trade offs and in issue comments.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 02 Jun 2021 01:24:12 +0000</pubDate>
+    </item>
+    <item>
+      <title>Example Request For Comment</title>
+      <link>https://harrisonmalone.dev/2021/05/example-request-for-comment</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>The second task for the week was to create our own example RFC.</p>
+<blockquote>
+<p>Write the outline of an RFC for something you worked on previously at 99. Doesn’t need to be a full blown RFC, just give us the gist of it. You may find it helpful to write about a task that perhaps didn’t go as smoothly as you wished, or explore alternative implementations of something you were happy with.</p>
+</blockquote>
+<p>I think the best way to tackle this is to create an RFC for a <a href="https://github.com/99designs/frontend/pull/3293">current ticket</a> I'm working on as there were a couple of different approaches I could have taken. I'll again be using the framework that's set out in <a href="https://99designs.atlassian.net/wiki/spaces/DEV/pages/2258993794/RFCs+at+99">this RFC help document</a>.</p>
+<h3>[RFC] Add Facebook Project Selection Page</h3>
+<p>The partners and products team is adding a new package selection page for Facebook. The page should replicate one that already exists for <a href="https://99designs.com/briefs/square-online/create">Square</a>. As this is a new page a route also needs to be created. After some discussion with the team the decision was made to use the <code>/briefs/facebook/create</code> route but I'm open to some feedback around this.</p>
+<p>The motivation behind this change is to display new Facebook products on our platform. Currently the page will display a Facebook Ad Campaign package as well as a generic package. Without this page there wouldn't be an easy way for customers to see all available packages and kick start briefs.</p>
+<p>The implementation of the page itself is pretty basic as it will almost exactly take the form of the <code>CreateSquareOnlineStore</code> component. However, there are a couple of different options around duplication:</p>
+<h4>Option 1</h4>
+<ul>
+<li>Have two components (Facebook, Square) with duplication</li>
+<li>This isn't optimal but it's the easiest way to get something into production and working as soon as possible</li>
+</ul>
+<h4>Option 2</h4>
+<ul>
+<li>Have one component that combines the functionality needed for both Facebook and Square</li>
+<li>The same <code>usePackagesByCategoryQuery</code> is used to fetch the package options</li>
+<li>The variation exists where props need to be passed though to the <code>StartProjectBriefProvider</code> that are specific to the package, there are 3 different types for Square</li>
+<li>We need to find a way to dynamically pass these props for the given components</li>
+</ul>
+<p>The current recommended approach is to go with Option 1 to ensure that we have the page working. The team has some upcoming kick off meetings in the next few weeks that will run through decoupling briefs and packages. My hope is that some of that work may help here.</p>
+<p>There is some uncertainty about relying on these meetings to fix code that isn't <em>clean</em> however this is something we need to be strong about coming back to! It will be filed as a ticket in the backlog.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 31 May 2021 07:24:38 +0000</pubDate>
+    </item>
+    <item>
+      <title>Git Rebase</title>
+      <link>https://harrisonmalone.dev/2021/05/git-rebase</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Today I did a squash commit with <code>git rebase</code>. These were the steps taken to achieve this:</p>
+<ol>
+<li>Rebase interactively against <code>master</code></li>
+</ol>
+<pre><code class="language-bash">git rebase -i master
+</code></pre>
+<ol start="2">
+<li>
+<p>Replace the <code>p</code> with an <code>s</code> next to each commit message</p>
+</li>
+<li>
+<p>Continue the rebase after resolving conflicts</p>
+</li>
+</ol>
+<pre><code class="language-bash">git rebase --continue
+</code></pre>
+<ol start="4">
+<li>Force push</li>
+</ol>
+<pre><code class="language-bash">git push origin master --force
+</code></pre>
+<p>I still don't fully understand how it works and I should do some more practice with just some example projects or read the <a href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">rebase chapter again</a> for the git book. This also seems like a <a href="https://medium.com/@slamflipstrom/a-beginners-guide-to-squashing-commits-with-git-rebase-8185cf6e62ec">good post on squash commits</a> specifically.</p>
+<h3>Review</h3>
+<p>I practiced this over the weekend with some basic squash commits in a main branch and it was pretty easy! The basic notation you need to remember is:</p>
+<pre><code class="language-bash">git rebase -i &lt;commit-id&gt;
+</code></pre>
+<p>You then use the <code>p</code> or <code>s</code> notation to pick (keep original commit) or squash (combine commits). You also need a tad of <code>vim</code> knowledge if you're using that as the editor but it's not too tricky. I'm not exactly what the use case of passing a branch is (like the above) but if your intention us just to squash some commits together in the same branch then <code>commit-id</code> is the way to go.</p>
+<p>This will also only work if you're working with more than 3 commits in a branch. If you want to merge just 2 commits together in a branch the commands are:</p>
+<pre><code class="language-bash">git reset --soft &quot;HEAD^&quot;
+git commit --amend
+</code></pre>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Sun, 30 May 2021 23:54:21 +0000</pubDate>
+    </item>
+    <item>
+      <title>Slices And Arrays In Go</title>
+      <link>https://harrisonmalone.dev/2021/05/slices-and-arrays-in-go</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I've been looking a little bit more at slices and arrays in Go and have come across a couple of things.</p>
+<p>Firstly, I need to start thinking about slices as a subset of an array. From the Go docs:</p>
+<blockquote>
+<p>The slice type is an abstraction built on top of Go's array type, and so to understand slices we must first understand arrays.</p>
+</blockquote>
+<p>Secondly, I was struggling with the concept of capacity in slices and how updating one slice can update another.</p>
+<p>Consider this example:</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func appendOne(s []int) []int {
+	return append(s, 1)
+}
+
+func main() {
+	s1 := []int{0, 0, 0}
+	s2 := s1
+	fmt.Printf(&quot;Before appendOne:\n&amp;s1: %p %[1]v\n&amp;s2: %p %[2]v\n&quot;, s1, s2)
+	s1 = appendOne(s1)
+	fmt.Printf(&quot;After appendOne:\n&amp;s1: %p %[1]v\n&amp;s2: %p %[2]v\n&quot;, s1, s2)
+	s1[0] = 2
+	fmt.Printf(&quot;After update:\n&amp;s1: %p %[1]v\n&amp;s2: %p %[2]v\n&quot;, s1, s2)
+}
+</code></pre>
+<p>I initialize a slice with 3 integers. I then assign the value of the newly created slice to another variable. They currently contain the same values and the same pointer.</p>
+<pre><code class="language-bash">Before appendOne:
+&amp;s1: 0xc00001c0f0 [0 0 0]
+&amp;s2: 0xc00001c0f0 [0 0 0]
+</code></pre>
+<p>We then call a function passing the first slice through as an argument and append a new value to it. We now have this as output:</p>
+<pre><code class="language-bash">After appendOne:
+&amp;s1: 0xc0000200f0 [0 0 0 1]
+&amp;s2: 0xc00001c0f0 [0 0 0]
+</code></pre>
+<p>The <code>s1</code> pointer value has changed here as the capacity of the slice was increased to 4 items (from 3) and therefore a new underlying array was created.</p>
+<p>Updating the <code>s1</code> array only effects that array alone.</p>
+<pre><code class="language-bash">After update:
+&amp;s1: 0xc0000200f0 [2 0 0 1]
+&amp;s2: 0xc00001c0f0 [0 0 0]
+</code></pre>
+<p>Now consider this change:</p>
+<pre><code class="language-go">func main() {
+	s1 := make([]int, 4, 8)
+}
+</code></pre>
+<p>The biggest change here is that the capacity is never exceeded even after appending therefore the pointer value doesn't change for <code>s1</code>.</p>
+<pre><code class="language-bash">After appendOne:
+&amp;s1: 0xc000014180 [0 0 0 0 1]
+&amp;s2: 0xc000014180 [0 0 0 0]
+</code></pre>
+<p>So when we try to update we get this:</p>
+<pre><code class="language-bash">After update:
+&amp;s1: 0xc000014180 [2 0 0 0 1]
+&amp;s2: 0xc000014180 [2 0 0 0]
+</code></pre>
+<p>Both slices are updated as they both point to the same value.</p>
+<p>The same principle applies even if you pass a pointer as an argument instead of the slice itself.</p>
+<pre><code class="language-go">func appendOne(s *[]int) {
+	*s = append(*s, 1)
+}
+
+func main() {
+	appendOne(&amp;s1)
+}
+</code></pre>
+<p>We still the same output:</p>
+<pre><code class="language-bash">After appendOne:
+&amp;s1: 0xc000014180 [0 0 0 0 1]
+&amp;s2: 0xc000014180 [0 0 0 0]
+After update:
+&amp;s1: 0xc000014180 [2 0 0 0 1]
+&amp;s2: 0xc000014180 [2 0 0 0]
+</code></pre>
+<p>This example is also pretty interesting.</p>
+<pre><code class="language-go">func main() {
+	src := []int{}
+	src = append(src, 0)
+	src = append(src, 1)
+	src = append(src, 2)
+	fmt.Printf(&quot;%p %[1]v\n&quot;, src)
+	dest1 := append(src, 3)
+	fmt.Printf(&quot;%p %[1]v\n&quot;, dest1)
+	dest2 := append(src, 4)
+	fmt.Printf(&quot;%p %[1]v\n&quot;, dest2)
+	fmt.Println(src, dest1, dest2)
+}
+</code></pre>
+<p>The output we get is:</p>
+<pre><code class="language-bash">0xc0000180c0 [0 1 2]
+0xc0000180c0 [0 1 2 3]
+0xc0000180c0 [0 1 2 4]
+[0 1 2] [0 1 2 4] [0 1 2 4]
+</code></pre>
+<p>This is confusing at first but the reason why <code>dest1</code> and <code>dest2</code> are the same is that they're relying on the same underlying array and pointer value coming from <code>src</code>.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Fri, 28 May 2021 06:00:34 +0000</pubDate>
+    </item>
+    <item>
+      <title>Superstore</title>
+      <link>https://harrisonmalone.dev/2021/05/superstore</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I've been slamming through a bunch of <a href="https://en.wikipedia.org/wiki/Superstore_(TV_series)">Superstore</a> on Netflix lately. I think it's the super lighthearted nature of the show that I like a lot! It's just so easy to binge and watch for hours. It also reminds me of the days of working retail which I guess is the hook for so many people.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Thu, 27 May 2021 08:20:27 +0000</pubDate>
+    </item>
+    <item>
+      <title>Architecture At 99</title>
+      <link>https://harrisonmalone.dev/2021/05/architecture-at-99</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Last Friday I was in a meeting that ran through the history of 99's architecture and explaining the reasoning behind some technical decisions that led to where we are now. To reaffirm where we are now are stack consists of:</p>
+<blockquote>
+<p>Multiple smaller services written in Go, the request and responses sent from these services abide by a contract defined in a <a href="https://en.wikipedia.org/wiki/Protocol_Buffers">Protocol Buffer</a> file, the functions written in our services generate clients that can be consumed by other services, this code generation is done by <a href="https://github.com/twitchtv/twirp">Twirp</a>, we have one large frontend monorepo which is all <a href="https://reactjs.org/">React</a> and <a href="https://graphql.org/">GraphQL</a>, the frontend also has a service inside of it which resolves the GraphQL requests (query, mutation, subscription) and generally consumes the clients generated from the Go services</p>
+</blockquote>
+<p>Some other notes I took from the meeting were as follows:</p>
+<ul>
+<li>Workbench, home for designers, designer profiles, your work, as a client get overview of your work across the platform</li>
+<li>Handover, designers handing over designs to client, process after they win a contest</li>
+<li>Start is for launching projects, homepage</li>
+<li>Launch flows taken out of start and contents and put into create, reduces load on contests</li>
+</ul>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 24 May 2021 23:12:46 +0000</pubDate>
+    </item>
+    <item>
+      <title>Gqlgen Tutorial</title>
+      <link>https://harrisonmalone.dev/2021/05/gqlgen-tutorial</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>The <code>gqlgen</code> <a href="https://99designs.atlassian.net/wiki/spaces/DEV/pages/2290779495/GraphQL+and+gqlgen+at+99designs">blog post</a> written by Eddy is awesome! It contains a full walk through on building a little app. Will actually go ahead and implement this next week in 99time.</p>
+<p>Some things that came out of the implementation of the code:</p>
+<ol>
+<li>
+<p>A couple of times when running <code>go generate ./...</code> the <code>generated.go</code> file wasn't being generated at all due to some kind of error in the resolvers or graphqls files, basically when this happens look at the changes you've made and maybe roll back to what you had before, check if those changes you made previously had some errors</p>
+</li>
+<li>
+<p>The <code>@goModel</code> directive did a few things that I think I understand better now, passing the string to a GraphQL type then ensures that when any queries related to this type resolve you're still only getting back the fields defined in this type, even if the fields in the model (defined in Go) are different</p>
+</li>
+<li>
+<p>When running the <code>gqlgen</code> command you often just get function signatures automatically, when using the directive received signatures for <code>LastName</code> and <code>FullName</code></p>
+</li>
+<li>
+<p>There's still some syntax that I don't fully grasp in Go, especially imports and exports, pointers</p>
+</li>
+<li>
+<p>It would potentially be good practise to learn a Go ORM and deploy that to something like Heroku, maybe learn some of the low level SQL drivers that Go has, I presume I could use a basic implementation like this but instead of in memory data using a real database</p>
+</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 24 May 2021 02:16:14 +0000</pubDate>
+    </item>
+    <item>
+      <title>Services At 99</title>
+      <link>https://harrisonmalone.dev/2021/05/services-at-99</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Something I’ve struggled a bit with so far at 99 is the services that you need to start in order to access specific pages. <a href="https://99designs.atlassian.net/wiki/spaces/DEV/pages/1989771402/Views+in+99+and+how+to+start+them">This resource</a> lists screens, the codebase and the services you need to start in order to access parts of the 99 site. It even includes what’s available with different user roles.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 19 May 2021 06:23:50 +0000</pubDate>
+    </item>
+    <item>
+      <title>Journey Of A Request At 99</title>
+      <link>https://harrisonmalone.dev/2021/05/journey-of-a-request-at-99</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>This is a summary of how 99d’s infrastructure works holistically for a single component that fires a request when a button is pressed. The UI I’m using in this example is <code>&lt;DismissJobButton /&gt;</code> that is defined within the <code>pages/browse-projects</code> directory. Let’s walk through the steps of what happens:</p>
+<ol>
+<li>
+<p>When the component renders we invoke <a href="https://www.apollographql.com/docs/react/">Apollo Clients</a> <code>useMutation</code> hook which returns a function that will fire <code>onSubmit</code> when the dismiss button is pressed</p>
+</li>
+<li>
+<p>Note here that we don't directly invoke useMutation, instead we use a library called <a href="https://www.graphql-code-generator.com/">GraphQL Code Generator</a> to generate custom hooks, the command used to generate this code is:</p>
+</li>
+</ol>
+<pre><code class="language-bash">nx run spa:graphql
+</code></pre>
+<blockquote>
+<p>When exactly can you run this generator?</p>
+</blockquote>
+<p>The generator looks for the schema files in backend, so the type generation can be run after updating the .graphql files! See <a href="https://github.com/99designs/frontend/blob/3db2a98af7adc1a0b17018526116ca3341664732/graphql-codegen.yml">here</a>.</p>
+<ol start="3">
+<li>
+<p>The GraphQL mutation for dismissing a job sits alongside the component, this code strongly types the input that is passed to the mutation and specifies what values are returned from the mutation</p>
+</li>
+<li>
+<p>The mutation input is sent to a resolver in our BFF (Backend For Frontend), this is the <code>backend</code> directory that is contained within the <code>frontend</code> repo, the code written within the backend defines a GraphQL schema and defines resolvers for mutations and queries that are then written in <code>backend/graph</code>, for example <code>DismissJob</code> is a function that we define in <code>job.go</code> and fires off a request to the <code>DismissJob</code> RPC, this is an example of that call</p>
+</li>
+</ol>
+<pre><code class="language-go">func (m *mutationResolver) DismissJob(ctx context.Context, input models.DismissJobInput) (*createpb.JobForDesigner, error) {
+	res, err := m.Clients.Job.DismissJob(ctx, &amp;createpb.DismissJobRequest{
+		Actor:   actorFromContext(ctx),
+		JobId:   input.ID,
+		Reasons: input.Reasons,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Job, nil
+}
+</code></pre>
+<ol start="5">
+<li>If the resolvers are defined you can use <a href="https://gqlgen.com/getting-started/">gqlgen</a> to turn your GraphQL types, mutations and queries into go structs, functions and interfaces, this ends up in <code>generated.go</code>, the command used to generate this code is</li>
+</ol>
+<pre><code class="language-bash">go generate ./...
+</code></pre>
+<blockquote>
+<p>Where are models defined?</p>
+</blockquote>
+<p><code>gqlgen</code> will generate models for the types defined in the graphql schema files. For example, the <code>input</code> that is passed to the mutation resolver is defined in the <code>backend/models</code> directory in <code>models_gen.go</code>. See <a href="https://github.com/99designs/frontend/blob/432162161ae45842b4c5c2013715411aec4f3b23/backend/models/models_gen.go#L160">code here</a>. There is also some config around using the <code>@goModel</code> directive but will come back to this another time.</p>
+<blockquote>
+<p>What is the code in generated.go is used for?</p>
+</blockquote>
+<p>This file contains the entire GraphQL server code that can used to attach to an endpoint. You can see it being <a href="https://github.com/99designs/frontend/blob/613ff4a43d869d2b6d225ad1d77298a8de68f293/backend/web/routes.go#L93">configured here</a>.</p>
+<ol start="6">
+<li>
+<p>Before I mentioned the RPC function being invoked in the BFF however we also need to define this, the RPC framework we use is called <a href="https://github.com/twitchtv/twirp">Twirp</a>, in this instance we're creating new jobs for designers (or dismissing jobs), therefore this RPC interface lives within the <a href="https://github.com/99designs/create">create service</a></p>
+</li>
+<li>
+<p>Within the <code>rpc/proto</code> directory we have a <code>job.proto</code> file, this file defines a DismissJob RPC</p>
+</li>
+</ol>
+<pre><code class="language-bash">rpc DismissJob(DismissJobRequest) returns (DismissJobResponse);
+</code></pre>
+<p>and also maps out what parameters a request can receive and a response can send.</p>
+<ol start="8">
+<li>We then have some Go server code in the create service that needs to align to this RPC definition, this is defined in <code>rpc/job</code> and there is a <code>job.go</code> file with instance methods for the Service struct, one of which is <code>DismissJob</code></li>
+</ol>
+<pre><code class="language-go">func (s *Service) DismissJob(ctx context.Context, req *createpb.DismissJobRequest) (*createpb.DismissJobResponse, error) {
+	job, err := s.addJobInterest(ctx, model.NewJobInterestParams{
+		EffectiveUserID: int(req.Actor.EffectiveUserId),
+		RealUserID:      int(req.Actor.RealUserId),
+		JobID:           req.JobId,
+		Type:            model.JobInterestTypeDismiss,
+		Data:            castSdkDismissJobDataToDismissJobData(req.Reasons),
+	}, req.Actor)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &amp;createpb.DismissJobResponse{Job: castJobForDesignerToSdk(job)}, nil
+}
+</code></pre>
+<p>this function takes in parameters from the request and calls a function which executes some SQL and updates the DB, we then send back a response that contains the values we defined as a message in the RPC.</p>
+<blockquote>
+<p>How does the mapper and SQL calls actually work?</p>
+</blockquote>
+<p>It might be good to familiarize yourself with how to <a href="https://github.com/golang/go/wiki/SQLInterface">perform DB queries in Go</a>.</p>
+<ol start="9">
+<li>If there are no errors the resolver returns a job, that job is currently not being used in the <code>&lt;DismissJob /&gt;</code> component</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 19 May 2021 00:26:44 +0000</pubDate>
+    </item>
+    <item>
+      <title>Node Shell Scripting</title>
+      <link>https://harrisonmalone.dev/2021/05/node-shell-scripting</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Came across something interesting on the weekend when reading through Hacker Newsletter. It's a command line tool called <a href="https://github.com/google/zx">zx</a> which enables really simple shell scripting in Node.js.</p>
+<p>Here is some syntax taken straight from the docs.</p>
+<pre><code class="language-shell">#!/usr/bin/env zx
+
+await $`cat package.json | grep name`
+
+let branch = await $`git branch --show-current`
+await $`dep deploy --branch=${branch}`
+</code></pre>
+<p>I remember trying to write shell scripts with Node.js in the past and its been a pain in the ass. This basic <code>$command</code> notation simplifies this greatly! The thing is you also just don't get <code>$command</code> you also get:</p>
+<ol>
+<li><code>fetch</code>, make api calls</li>
+<li><code>question</code>, get user input</li>
+<li><code>chalk</code>, colorize text</li>
+</ol>
+<p>This seems really powerful and will probably be my go to choice for automation and scripting in the future.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 18 May 2021 11:53:54 +0000</pubDate>
+    </item>
+    <item>
+      <title>Twirp At 99</title>
+      <link>https://harrisonmalone.dev/2021/05/twirp-at-99</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Here are some brief reflections on the <a href="https://github.com/harrisonmalone/twirp-workshop">RPC and Twirp workshop</a> I completed yesterday.</p>
+<ul>
+<li><code>chi</code> HTTP framework listening on port 3000 in <code>main.go</code></li>
+<li>Twirp server is attached to POST requests with wildcard path prefix</li>
+<li>Define proto file, kind of like a schema, define the shape of what parameters a request and response will have</li>
+<li>Can run twirpgen command</li>
+</ul>
+<pre><code class="language-bash">99dev twirp init &lt;service&gt;
+</code></pre>
+<p>to scaffold folder structure and basic proto file</p>
+<ul>
+<li>Go server code needs to align to what we defined in the RPC, Server struct has some instance methods that are like controller endpoints, access to request parameters and send back response struct to client</li>
+<li>Can make <code>curl</code> requests to those endpoints</li>
+<li>When you change proto file you also need to regenerate RPCs with Twirp, command is</li>
+</ul>
+<pre><code class="language-bash">99dev twirp generate &lt;service&gt;
+</code></pre>
+<ul>
+<li>You basically then have access to clients for Go, PHP and Ruby</li>
+<li>PHP generated a bunch of classes that you could interface with directly, I imagine ruby is very similar</li>
+</ul>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 18 May 2021 00:39:39 +0000</pubDate>
+    </item>
+    <item>
+      <title>Applied Go</title>
+      <link>https://harrisonmalone.dev/2021/05/applied-go</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Been working through <a href="https://appliedgo.com/">Applied Go</a> over the last week or so and really enjoying some of the challenges. I think it's been a good one to actually solve some challenges and read code that I can parse and understand to improve.</p>
+<p>I have pushed a <a href="https://github.com/harrisonmalone/applied-go">GitHub repo</a> of challenges I've worked on. Some of my favorites so far have been <a href="https://github.com/harrisonmalone/applied-go/blob/main/strings/strings.go">strings</a> and <a href="https://github.com/harrisonmalone/applied-go/blob/main/command_line_conversion/command_line_conversion.go">command line conversion</a>.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 17 May 2021 00:22:29 +0000</pubDate>
+    </item>
+    <item>
+      <title>Upcoming Workshops</title>
+      <link>https://harrisonmalone.dev/2021/05/upcoming-workshops</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>There’s a couple of things I need to be across that are coming up at work mainly around workshops.</p>
+<p>Firstly there’s an AWS workshop on the 12th of May. This will run through how apps are hosted and deployed at 99. The <a href="https://github.com/miamollie/aws-workshop/tree/master/ops#aws--prerequisites">README</a> required that you run through some commands to set things up correctly. It also contains the exercises that I’ll work through.</p>
+<p>Secondly I have a <a href="https://github.com/twitchtv/twirp">Twirp</a> workshop scheduled for 18th of May. This will run through how server to server requests work at 99 and will be helpful in understanding their general architecture.</p>
+<p>Taken from the <a href="https://github.com/99designs/twirp-workshop">README</a>:</p>
+<blockquote>
+<p>The key concepts this workshop covers are RPC, twirp and the 99designs sdk.</p>
+</blockquote>
+<blockquote>
+<p>In order to demonstrate these concepts, we will be building two applications. First, we will build a simple twirp server with a few endpoints in go. Second, we will build a php application that makes RPC requests to the go application.</p>
+</blockquote>
+<p>This workshop needs to be completed before the actual date the meeting takes place. It should take around 2 hours. I should try to improve my Go knowledge in order to get the most out of these workshops. Try to make your way through <a href="https://appliedgo.com/courses/enrolled/128278">Applied Go</a> in your downtime.</p>
+<p>I also need to read the first chapter of <a href="https://enos.itcollege.ee/~jpoial/oop/naited/Clean%20Code.pdf">Clean Code</a> by Thursday afternoon this week.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 11 May 2021 00:59:19 +0000</pubDate>
+    </item>
+    <item>
+      <title>Playing With Graphql</title>
+      <link>https://harrisonmalone.dev/2021/05/playing-with-graphql</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>In the first junior dev sprint at work I've been looking into <a href="https://graphql.org/">GraphQL</a> and <a href="https://www.apollographql.com/docs/react/">Apollo Client</a>. My learning approach to feeling a bit more comfortable with these technologies was as follows:</p>
+<blockquote>
+<p>going through tutorials and reading documentation on the different libraries I'd need to use and then building a small application</p>
+</blockquote>
+<p>The application I chose to build was a classic todo CRUD app. Here is the <a href="https://github.com/harrisonmalone/rails-graphql-cra-client">client</a> and <a href="https://github.com/harrisonmalone/rails-graphql-cra-server">server</a> code. I decided to stick with languages I already felt comfortable with and therefore I'm using a Rails backend and React client (JavaScript). I could have implemented the React client in TypeScript but felt that it wasn't really necessary.</p>
+<p>I knew fairly little about GraphQL coming into work at 99 but feel somewhat comfortable with some of the basics now. These basics include GraphQL schemas, queries, mutations and resolvers.</p>
+<p>Setting up a basic GraphQL schema with Rails was fairly intuitive using the <a href="https://graphql-ruby.org/">GraphQL ruby</a> gem. I followed a <a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-a-ruby-on-rails-graphql-api">Digital Ocean tutorial</a> to get up to speed and soon had a basic backend implemented.</p>
+<p>I was able to execute full CRUD actions on the graph via <a href="https://github.com/graphql/graphiql">GraphiQL</a> which was awesome to test out the API before even starting to implement the frontend. I like that you can basically type any letter and get some autocompletion whether it's a mutation or a query.</p>
+<p>Some of the big changes moving from REST to GraphQL were:</p>
+<ul>
+<li>No routes</li>
+<li>No controllers, controller actions basically became resolvers</li>
+<li>No mapping through arrays to create JSON data structures when you're joining between tables</li>
+</ul>
+<p>I then came to the client implementation. This is <a href="https://hm-screen-recordings.s3.ap-southeast-2.amazonaws.com/Screen%20Recording%202021-05-05%20at%202.54.01%20pm.mov">what things look like</a> right now.</p>
+<p>Setting up Apollo Client is pretty simple. You create a client and pass it the <code>uri</code> and then wrap your entire <code>&lt;App /&gt;</code> in an <code>&lt;ApolloProvider /&gt;</code> which is the same as using something like React Context or Redux.</p>
+<p>To query your database from any component you can invoke the <code>useQuery</code> hook, passing it a <code>gql</code> template string. This returns a number of things but all we need to know here is that it gives you data that you can then feed into your jsx. A mutation is similar; you get the <code>useMutation</code> hook, pass it a <code>gql</code> template string and then you can a function that receives variables that will perform the mutation for you.</p>
+<p>Where I started to get a little bit confused with Apollo was when I tried to fire a <code>createTask</code> mutation and then redirect back to my homepage expecting that new task to appear in the list. It was not there on first try 😤!</p>
+<p>It turned out that Apollo has a cache which kind of reminded me of having a global React Context state. In order for me to be able to write back to the cache and have the freshest data from that cache available on the homepage I needed to do something like this:</p>
+<pre><code class="language-jsx">function CreateTask() {
+  const [addTask] = useMutation(ADD_TASK, {
+    update: (cache, { data }) =&gt; {
+      const cachedData = cache.readQuery({
+        query: TASKS,
+      });
+      cache.writeQuery({
+        query: TASKS,
+        data: {
+          fetchTasks: [data.addTask.task, ...cachedData.fetchTasks],
+        },
+      });
+    },
+    onCompleted: () =&gt; {
+      history.push(&quot;/&quot;);
+    },
+  });
+
+  // jsx for form
+}
+</code></pre>
+<p>It basically reads the old cache, gets the latest task from <code>data</code> and creates a new cache before redirecting back to the homepage.</p>
+<p>Using the cache like this to me seemed like not a great solution for a simple problem. I did a bit more reading and realized that the <code>useQuery</code> hook accepts an object of options and one of those options is <code>fetchPolicy</code>.</p>
+<p>This is what my current implementation looks like for the <code>useQuery</code> on the homepage:</p>
+<pre><code class="language-js">const { data, loading, error } = useQuery(TASKS, {
+  fetchPolicy: &quot;network-only&quot;,
+});
+</code></pre>
+<p>This ensures that the cache isn't used and data will always be fetched from the network. My <code>addTask</code> mutation is also now super simple.</p>
+<pre><code class="language-jsx">const [addTask] = useMutation(ADD_TASK, {
+  onCompleted: () =&gt; {
+    history.push(&quot;/&quot;);
+  },
+});
+</code></pre>
+<p>There are a number of other fetch polices <a href="https://www.apollographql.com/docs/react/data/queries/#setting-a-fetch-policy">documented here</a>. I currently don't understand what all of them do and will need to do some more testing.</p>
+<p>My update and delete mutations were also pretty interesting and slightly different. The <code>&lt;Tasks /&gt;</code> component (homepage) also houses the <code>removeTask</code> mutation.</p>
+<pre><code class="language-jsx">const [removeTask] = useMutation(REMOVE_TASK, {
+  refetchQueries: [
+    {
+      query: TASKS,
+    },
+  ],
+});
+</code></pre>
+<p>You can see here that the <code>useMutation</code> hook accepts a object of options one of which being <code>refetchQueries</code>. It takes an array of queries that are fired when the mutation has resolved. This is nice as when I remove a task I want the UI to update with the latest data in the database and refetch achieves this for me.</p>
+<p>Updating resources with Apollo is almost the simplest solution to wire up.</p>
+<pre><code>const [editTask] = useMutation(EDIT_TASK, {
+  onCompleted: () =&gt; {
+    history.push(&quot;/&quot;);
+  },
+});
+</code></pre>
+<p>The mutation just needs to fire and Apollo magic then kicks in. This is taken straight from <a href="https://www.apollographql.com/docs/react/data/mutations/#updating-a-single-existing-entity">the docs</a>:</p>
+<blockquote>
+<p>If a mutation updates a single existing entity, Apollo Client can automatically update that entity's value in its cache when the mutation returns. To do so, the mutation must return the id of the modified entity, along with the values of the fields that were modified. Conveniently, mutations do this by default in Apollo Client.</p>
+</blockquote>
+<p>I'm not exactly sure how this works in my instance as my data is from the network however I did notice that when I didn't have the <code>fetchPolicy</code> set in <code>useQuery</code> my updated entries were correct after redirecting.</p>
+<p>Everything is working decently well but I'm having a couple of issues which I documented in my <a href="https://github.com/harrisonmalone/rails-graphql-cra-client#update-on-30042021">README</a>.</p>
+<ol>
+<li><code>&lt;React.StrictMode&gt;</code> throwing a warning of state update on unmounted component</li>
+<li>Had to add a <code>typePolicy</code> for my delete request to work correctly which I addressed by <a href="https://github.com/harrisonmalone/rails-graphql-cra-client/blob/main/src/typePolicies.js">creating this file</a></li>
+</ol>
+<p>An update to these issues was found today after a lot of debugging.</p>
+<p>I used <code>fetchPolicy: &quot;no-cache&quot;</code> on my <code>useQuery</code> to ensure that the unmounted component state error disappeared. I think that I can use the cache if I pass more options into it but I don't quite understand them as yet. My <code>addTask</code> mutation is still using a refetch query to update the tasks array with the latest data from the server.</p>
+<p>My <code>removeTodo</code> mutation now is just invoked and following it I use the <code>refetch</code> function that you get from a <code>useQuery</code> to again update the tasks array with the latest data.</p>
+<p>I learnt a lot from this little project and it has definitely made me feel more comfortable working with GraphQL.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 10 May 2021 06:39:55 +0000</pubDate>
+    </item>
+    <item>
+      <title>First Day</title>
+      <link>https://harrisonmalone.dev/2021/04/first-day</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>My first day at 99designs is tomorrow! Really looking forward to it.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 05 Apr 2021 06:40:10 +0000</pubDate>
+    </item>
+    <item>
+      <title>Loop Speeds</title>
+      <link>https://harrisonmalone.dev/2021/03/loop-speeds</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Found this pretty interesting. This is the straight up speed differences between <a href="https://nodejs.org/en/">Node.js</a> and <a href="https://golang.org/">Go</a> in a huge loop.</p>
+<p>First up here's the Node.js loop.</p>
+<pre><code class="language-js">let counter = 0
+console.time(&quot;timer&quot;)
+while (counter &lt;= 1000000000) {
+  counter += 1
+}
+console.timeEnd(&quot;timer&quot;)
+// timer: 752.616ms
+</code></pre>
+<p>Here is the Go loop.</p>
+<pre><code class="language-go">func main() {
+  start := time.Now()
+  counter := 0
+  for counter &lt;= 1000000000 {
+    counter += 1
+  }
+  end := time.Now()
+  fmt.Println(end.Sub(start))
+  // 502.498873ms
+}
+</code></pre>
+<p>Clearly Go is a lot faster. Will be interesting to see where these speed differences become really useful.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Sat, 27 Mar 2021 12:03:11 +0000</pubDate>
+    </item>
+    <item>
+      <title>Mac Reset</title>
+      <link>https://harrisonmalone.dev/2021/03/mac-reset</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>It might be kind of fun to do a full reset of my Mac and install the tools I need for 99designs fresh. Just seems like my setup has a lot of cruft these days.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 24 Mar 2021 00:56:19 +0000</pubDate>
+    </item>
+    <item>
+      <title>Be Curious</title>
+      <link>https://harrisonmalone.dev/2021/03/be-curious</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Be curious. Read and watch a bunch of different things to get other perspectives on tech. I find this to be a really great way to learn new things and have talking points with other developers. As an example, I often have this exact scenario with my colleague Ed.</p>
+<blockquote>
+<p>I was reading this blog post on the weekend and I found this topic on <code>insert tech</code> to be quite interesting</p>
+</blockquote>
+<p>I like learning about the new trend and seeing why other developers like it. It might not even be a trend necessarily, it might be something quite old that I just never knew about.</p>
+<p>These are some of the resources that I use to be up to date on developer related news or find new techniques to use in my own projects.</p>
+<ol>
+<li><a href="https://syntax.fm/">Syntax.fm</a></li>
+</ol>
+<p>Excellent podcast on the latest developments in JavaScript.</p>
+<ol start="2">
+<li><a href="https://www.youtube.com/channel/UC-8QAzbLcRglXeN_MY9blyw">Ben Awad</a></li>
+</ol>
+<p>Awesome YouTuber that does some great tutorials and live coding. He does mainly focus on JavaScript but has tutorials on a bunch of different topics like vim or technical interviews.</p>
+<ol start="3">
+<li><a href="https://hackernewsletter.com/">Hacker Newsletter</a></li>
+</ol>
+<p>The best developer forum on the web. I've learnt a lot from reading the most popular articles each week. Even if a lot of the content is far too technical or domain specific I still can pick up bits and pieces.</p>
+<p>In terms of projects that I like to work on I often think about the services I currently use and ask myself</p>
+<blockquote>
+<p>Can I can do better?</p>
+</blockquote>
+<p>An example of that recently is the <a href="https://www.footytips.com.au/">Footy Tips</a> website that my friends use. I think I can do better that this. I think I can make a nicer UI and add some extra features on top of the way the website currently works.</p>
+<p>I also often start simple. Maybe I can make a simple terminal app as a proof of concept and then turn it into something bigger. For the Footy Tips idea I found <a href="https://api.squiggle.com.au/">an API</a> that gives me the AFL schedule and results. To test out the proof of concept I made a ruby terminal app that fetches all of the data and then sorts it correctly.</p>
+<pre><code class="language-ruby">require 'faraday'
+require 'json'
+require 'date'
+
+url = &quot;https://api.squiggle.com.au/?q=games&amp;year=2021&quot;
+games = JSON.parse(Faraday.get(url).body)[&quot;games&quot;]
+sorted_games = games.sort_by do |game|
+  Date.parse(game[&quot;date&quot;])
+end
+
+pp sorted_games
+</code></pre>
+<p>You then need to talk to people about your idea. Ed gave me some great advice today on how I could use <a href="https://devcenter.heroku.com/articles/scheduler">Heroku Schedular</a> to ensure that my results data is updated at least once per day after all the matches have been played. With that updated data I could then see if people have correctly tipped the right team.</p>
+<p>This kind of cycle is what you need to do over and over again to stay interested in the craft of coding and building things.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 23 Mar 2021 23:57:21 +0000</pubDate>
+    </item>
+    <item>
+      <title>Procedural Thinking</title>
+      <link>https://harrisonmalone.dev/2021/03/procedural-thinking</link>
+      <description></description>
+      <content:encoded><![CDATA[<blockquote>
+<p>What is programming?</p>
+</blockquote>
+<p>Programming is the act of instructing computers to carry out tasks and is often interchangeable with the term coding.</p>
+<blockquote>
+<p>What is a computer program?</p>
+</blockquote>
+<p>A computer program is just a sequence of instructions that a computer executes step by step. Nowadays we also refer to programs as applications.</p>
+<p>You can think about this sequence of instructions using an every day example. Let's use &quot;making a peanut butter sandwich&quot;. As a human you might:</p>
+<ol>
+<li>
+<p>Get the ingredients</p>
+</li>
+<li>
+<p>Get a knife and plate</p>
+</li>
+<li>
+<p>Place bread on plate</p>
+</li>
+<li>
+<p>Spread peanut butter</p>
+</li>
+<li>
+<p>Eat</p>
+</li>
+</ol>
+<p>but this isn't quite how a computer works. A computer needs <em>really</em> specific instructions. Just &quot;get the ingredients&quot; alone might not be specific enough! A computer will do exactly what it's told. And when there's not enough instructions it might act in a completely different way to the original intention.</p>
+<p>A good lesson from this is a computer will do exactly what you tell it to do, no more or no less. So the fault never lies with the computer but simply with the instructions provided.</p>
+<blockquote>
+<p>What is an algorithm?</p>
+</blockquote>
+<p>An algorithm is just a sequence of code instructions. For example, you might have an algorithm to sort words into alphabetical order.</p>
+<blockquote>
+<p>What language do we use to issue our instructions?</p>
+</blockquote>
+<p>In the peanut butter example we used the English language but a real computer doesn't understand English!</p>
+<p>Computers have their own natural language just like humans called binary. Binary represents two different states, <code>on</code> which is indicated by the number <code>1</code> and <code>off</code> which is indicated by the number <code>0</code>. Now if we had to code in the computers natural language of binary it would be really really hard because as a human we don't speak like that. To solve the problem where a human needs to be able to write instructions for a computer to understand we use what are known as programming languages.</p>
+<p>Programming languages are closer to our own natural language but way more structured. There are both high level and low level programming languages. The difference being is that low level languages are more similar to the machines language (binary), where higher level languages are more similar to how a human would speak. In this course we will learn a couple different higher level languages (Ruby and JavaScript).</p>
+<p>Programming languages are great and everything but still a computer only understands binary. So how does a programming language become binary? Well just like moving from any language to another we need to use a translator! A translator turns our code written in a particular programming language to binary for the computer to understand and execute. This is done in several different ways but we will focus on two which are interpreting and compiling.</p>
+<p>Whether a programming language is compiled or interpreted depends on the language itself. Some compiled languages you may have heard of are C, C#, Java and Go. Compilers will translate all the lines of a program to binary file and then execute the entire file. If there was an error during compiling (you made a mistake), then the compiler will let you know that an error has occurred and the code could not be compiled.</p>
+<p>Interpreted programming languages include Python, PHP, JavaScript and Ruby. The way interpreters work is that they will translate a single line of code into binary, execute that binary and then move onto the next line, until it runs every line of code. If an interpreter ever runs into an error than the entire program will stop and the error will be reported. This is a significant difference between compiled code because your app will run even if there is an error somewhere within your code! And once the app gets to that error it will crash.</p>
+<p>For now we will focus on the programming language Ruby. Lets write some code and get our computer to execute it!</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Sun, 14 Mar 2021 03:00:16 +0000</pubDate>
+    </item>
+    <item>
+      <title>Sheeps Clothes</title>
+      <link>https://harrisonmalone.dev/2021/03/sheeps-clothes</link>
+      <description></description>
+      <content:encoded><![CDATA[<p><a href="https://www.codewars.com/kata/5c8bfa44b9d1192e1ebd3d15/train/javascript">This</a> was a neat little coding challenge that encompasses control flow, string interpolation and finding the index of an element.</p>
+<pre><code class="language-javascript">function warnTheSheep(queue) {
+  const wolfIndex = queue.indexOf(&quot;wolf&quot;)
+  const sheepInDanger = (queue.length) - (wolfIndex + 1)
+  if (sheepInDanger &gt; 0) {
+    return `Oi! Sheep number ${sheepInDanger}! You are about to be eaten by a wolf!`
+  } else {
+    return &quot;Pls go away and stop eating my sheep&quot;
+  }
+}
+</code></pre>
+<p>I'm going to try and do more coding challenges in the future and talk about them here. It's a nice way to keep the brain ticking along.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Fri, 12 Mar 2021 05:46:44 +0000</pubDate>
+    </item>
+    <item>
+      <title>Being Happy With Tech</title>
+      <link>https://harrisonmalone.dev/2021/03/being-happy-with-tech</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Sometimes I go searching for something technical that isn't really needed. For the last few days I've been thinking about changing the way I hosted this blog; but for what reason. I guess I saw the performance score in <a href="https://developers.google.com/web/tools/lighthouse">Lighthouse</a> and thought that I needed to improve that score <em>but</em> I have things setup in a really nice way. Most things work as I expect them to. It's simple and the experience is good so why change that? For a couple seconds of performance for a blog! It's just silly and I could have been using my time more efficiently.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Fri, 12 Mar 2021 01:34:30 +0000</pubDate>
+    </item>
+    <item>
+      <title>How I Built My Blog</title>
+      <link>https://harrisonmalone.dev/2021/03/how-i-built-my-blog</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Taking notes and writing posts on technical topics is important to me. I've tried many apps and found most of them having slight flaws. So I've gone for the classic developer approach and built my own tool. The result is this very site you're looking at! In the past few months I've enjoyed the way this writing system works.</p>
+<p>It's a super basic approach but it does a few key things well. These things include:</p>
+<ol>
+<li>
+<p>Local files</p>
+</li>
+<li>
+<p>Good syntax highlighting on the web</p>
+</li>
+<li>
+<p>Some kind of backup solution that makes files accessible across multiple computers</p>
+</li>
+<li>
+<p>Files ordered by modification date</p>
+</li>
+</ol>
+<p>The tech used is as follows:</p>
+<ol>
+<li>
+<p>Rails API with a connection to an S3 bucket to host text files</p>
+</li>
+<li>
+<p>React client which connects to the Rails API</p>
+</li>
+<li>
+<p>File transfer app installed on local machine, I use <a href="https://panic.com/transmit/">Transmit</a> on macOS</p>
+</li>
+</ol>
+<p>If you wanted to create a blog with using the same implementation you'd need to do the following.</p>
+<ol>
+<li>
+<p>Create an <a href="https://aws.amazon.com/">AWS account</a></p>
+</li>
+<li>
+<p>Create an S3 bucket, give it a name and leave all the defaults</p>
+</li>
+<li>
+<p>Grab your AWS credentials, you'll need <code>access_key_id</code> and <code>secret_access_key</code>, ideally you'd set this up with an IAM user that only has programmatic privileges for S3</p>
+</li>
+<li>
+<p>Clone down the <a href="https://github.com/harrisonmalone/blog-server">backend</a> and <a href="https://github.com/harrisonmalone/blog-client">frontend</a> repositories</p>
+</li>
+<li>
+<p>Let's start with the backend, open your rails credentials file in VSCode</p>
+<pre><code class="language-bash">EDITOR=&quot;code --wait&quot; rails credentials:edit
+</code></pre>
+</li>
+<li>
+<p>Add your credentials in this exact format, indentation matters</p>
+<pre><code class="language-yml">aws:
+  access_key_id: &lt;your access key&gt;
+  secret_access_key: &lt;your secret key&gt;
+  bucket: &lt;your bucket name&gt;
+</code></pre>
+</li>
+<li>
+<p>Deploy the backend with Heroku, you need to install the <a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku CLI</a> and <code>git commit</code> before running</p>
+<pre><code class="language-bash">git push heroku master
+</code></pre>
+</li>
+<li>
+<p>Copy the contents in your <code>master.key</code> file in <code>config</code> and add this to the Heroku config vars dashboard located under settings, the format of the variable should look like this</p>
+<pre><code class="language-bash">RAILS_MASTER_KEY | &lt;your master key&gt;
+</code></pre>
+</li>
+<li>
+<p>Let's shift our attention to the frontend, create an <code>.env.production</code> file in the root directory of the client folder</p>
+</li>
+<li>
+<p>Add the following to this file</p>
+<pre><code class="language-txt">REACT_APP_BACKEND_URL=&lt;your heroku backend url&gt;
+</code></pre>
+</li>
+<li>
+<p>Install the <a href="https://docs.netlify.com/cli/get-started/">Netlify CLI</a></p>
+</li>
+<li>
+<p>Add a <code>netlify.toml</code> file to the root of your client directory</p>
+<pre><code class="language-bash">[[redirects]]
+  from = &quot;/*&quot;
+  to = &quot;/index.html&quot;
+  status = 200
+</code></pre>
+</li>
+<li>
+<p>Add this script to your <code>package.json</code></p>
+<pre><code class="language-json">&quot;deploy&quot;: &quot;yarn build &amp;&amp; netlify deploy --prod --dir=build&quot;
+</code></pre>
+</li>
+<li>
+<p>Run this command to deploy your client side</p>
+<pre><code class="language-bash">yarn run deploy
+</code></pre>
+</li>
+<li>
+<p>You'll get back a Netlify url that will be something like this:</p>
+<pre><code class="language-bash">https://brave-curie-671954.netlify.app
+</code></pre>
+</li>
+<li>
+<p>Add this url to your <code>cors.rb</code> file in your backend directory</p>
+<pre><code class="language-ruby">Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins 'https://brave-curie-671954.netlify.app'
+    resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head]
+  end
+end
+</code></pre>
+</li>
+<li>
+<p>Redeploy to Heroku</p>
+<pre><code class="language-bash">git push heroku master
+</code></pre>
+</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 09 Mar 2021 06:17:24 +0000</pubDate>
+    </item>
+    <item>
+      <title>Day One Metadata</title>
+      <link>https://harrisonmalone.dev/2021/03/day-one-metadata</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>One of my favorite things I've liked about <a href="https://dayoneapp.com/">Day One</a> so far is the way in which I can easily archive media by date. So often in the past other people are the one's taking photos or videos from their own devices and I want to get this media from them. Depending on the platform in which those other people use to send these assets, metadata is often completely screwed up and your photo client will be a jumbled mess in terms of timeline. Day One prevents this jumbled mess by asking the user if they want to preserve the metadata; you can just opt out of doing this and the date will be whatever entry you're currently on.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 08 Mar 2021 06:50:58 +0000</pubDate>
+    </item>
+    <item>
+      <title>Navbars</title>
+      <link>https://harrisonmalone.dev/2021/03/navbars</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>You'll often see <a href="https://pedantic-lovelace-a63d26.netlify.app/">this sort of design</a> when it comes to navbars.</p>
+<p>A logo will always be fixed to the left. For larger screens links will be justified to the right and for mobile a hamburger menu will show and the links will only appear when the burger is clicked. Feel free to resize the browser window in the site above and see the changes that take place.</p>
+<p>The implementation isn't too complicated but you need a combination of JavaScript, HTML and CSS knowledge.</p>
+<p>You'll firstly need the markup.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+    &lt;script
+      src=&quot;your font awesome url&quot;
+      crossorigin=&quot;anonymous&quot;
+    &gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;hamburgers.css&quot; /&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;nav&gt;
+      &lt;div class=&quot;logo&quot;&gt;
+        &lt;a href=&quot;&quot;&gt;&lt;i class=&quot;fas fa-border-style&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;hamburger-container&quot;&gt;
+        &lt;button
+          class=&quot;hamburger hamburger--elastic button-outline&quot;
+          type=&quot;button&quot;
+        &gt;
+          &lt;span class=&quot;hamburger-box&quot;&gt;
+            &lt;span class=&quot;hamburger-inner&quot;&gt;&lt;/span&gt;
+          &lt;/span&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;links&quot;&gt;
+        &lt;a href=&quot;&quot;&gt;Projects&lt;/a&gt;
+        &lt;a href=&quot;&quot; class=&quot;say-hello&quot;&gt;Say Hello&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/nav&gt;
+    &lt;ul class=&quot;hamburger-links&quot;&gt;
+      &lt;li&gt;&lt;a href=&quot;&quot;&gt;Projects&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;&quot;&gt;Say Hello&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>We have a <code>nav</code> element with 3 different sections: a <a href="https://fontawesome.com/">font awesome</a> logo, a hamburger container with the hamburger icon nested inside and a links section for links that appear when the screen is desktop sized. To ensure that the links and logo are distributed evenly in space we use a flexbox with <code>justify-content: space-between</code> and some margin.</p>
+<p>When the screen is less than 500px the links will display as none and the hamburger will be displayed as block. <a href="https://github.com/harrisonmalone/navbar/blob/master/style.css">This is the CSS</a> used to achieve this effect.</p>
+<p>Notice that we still have the hamburger-links <code>ul</code>. Basically what we need to do is use JavaScript to make this ul appear only when the hamburger is clicked. We also need to remove it when the hamburger is toggled off. You'll need to use a <code>script</code> tag to insert the JavaScript into. This tag is placed just before the closing <code>body</code> tag.</p>
+<pre><code class="language-html">&lt;script&gt;
+  const hamburger = document.querySelector('.hamburger')
+  const links = document.querySelector('.hamburger-links')
+  hamburger.addEventListener('click', function () {
+    hamburger.classList.toggle('is-active')
+    const isActive = hamburger.classList.contains('is-active')
+    if (isActive) {
+      links.style.display = 'block'
+    } else {
+      links.style.display = 'none'
+    }
+  })
+&lt;/script&gt;
+</code></pre>
+<p>I'm also using some <a href="https://github.com/harrisonmalone/navbar/blob/master/hamburgers.css">external CSS</a> another developer has written to animate the hamburger. Once you have all of this linked up you should be good to go.</p>
+<p>Feel free to clone this navbar and change the styles up!</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 02 Mar 2021 05:37:31 +0000</pubDate>
+    </item>
+    <item>
+      <title>Reminders App Notifications</title>
+      <link>https://harrisonmalone.dev/2021/03/reminders-app-notifications</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I'm currently building a reminders app using React Native. I had a bit of a play around with <a href="https://docs.expo.io/versions/latest/sdk/notifications/">local notifications</a> but I think what would be an easier approach is just to implement background jobs on a server. Rails in particular makes <a href="https://guides.rubyonrails.org/active_job_basics.html">jobs</a> really simple and I've had a bit of a play around with the library already.</p>
+<p>I think what I'd also do is have a <a href="https://hey.com/">Hey</a> account with push notifications turned on for a specific address which would be based on my <a href="https://sendgrid.com/">SendGrid</a> config.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 01 Mar 2021 04:44:30 +0000</pubDate>
+    </item>
+    <item>
+      <title>Fundamentals Of The Web</title>
+      <link>https://harrisonmalone.dev/2021/03/fundamentals-of-the-web</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>There are 3 core languages you need to master to make a reliable and good looking <a href="https://en.wikipedia.org/wiki/Web_application">web application</a> on the <a href="https://en.wikipedia.org/wiki/Client-side">client side</a>.</p>
+<p>You have a markup language in <a href="https://developer.mozilla.org/en-US/docs/Web/HTML">HTML</a>, a styling language in <a href="https://developer.mozilla.org/en-US/docs/Web/CSS">CSS</a> and a programming language in <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a>.</p>
+<p>If we were to use building a house as a metaphor for these 3 fundamentals:</p>
+<ul>
+<li>HTML is like the internals of the building to make it strong, without a well built base structure a house would be very difficult to style or just generally not be functional</li>
+<li>CSS is like the coat or paint you apply to a house, a house with perfect internals but no styling wouldn't be functional, good CSS makes websites look beautiful</li>
+<li>JavaScript is like the extra functional requirements to make a house complete, an example might be a house without lights or heating, you could theoretically live without these things in certain situations but you'll nearly always need them in some regard, JavaScript makes web apps dynamic and performant</li>
+</ul>
+<p>With HTML you can add actual elements to a page like headings, paragraphs, images, links, forms and inputs. With CSS you can style these elements adjusting fonts, alignment and colours. You implement some kind of design. With JavaScript you can fetch content from remote resources, listen to user events (clicks, scrolls, form submissions) and dynamically add markup or style.</p>
+<p>One final important web fundamental to understand is the concept of an <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP">HTTP request</a>. This protocol is the way in which a client (like Chrome) communicates with a web server. A web server is a computer that stores all the assets needed for a website to render. The web server receives a request and sends these assets back as a response to the client. The client is then smart enough to take these assets and turn them into a site.</p>
+<p>Every time you type in a url into the browser url bar and press return you are making an HTTP <code>GET</code> request to a web server. In some ways you can think of a web browser as an HTTP request machine.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 01 Mar 2021 04:20:49 +0000</pubDate>
+    </item>
+    <item>
+      <title>Breath Of The Wild Review</title>
+      <link>https://harrisonmalone.dev/2021/02/breath-of-the-wild-review</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>In early January I purchased a <a href="https://en.wikipedia.org/wiki/Nintendo_Switch">Nintendo Switch</a>. It's a gadget I'd wanted for quite a while and after having a bit more free time on my hands over the Christmas break I decided to pull the trigger.</p>
+<p>I knew that <a href="https://en.wikipedia.org/wiki/The_Legend_of_Zelda:_Breath_of_the_Wild">The Legend of Zelda: Breath of the Wild</a> had been reviewed extremely positively and it was one of the first games I should play. I've been blown away by the experience so far! This might be because I've been so out of the gaming world for about ~10 years. The Switch is the first console I've owned since having a PS3.</p>
+<p>I've thoroughly enjoyed various aspects of the game like the sort of cartoonish art style, the relaxing little chimes of music and the dialog between characters that reminds me of playing old Pokemon games. I really like the range of controls too. It start with just simple sword swings and climbing on things but soon progresses to be full on combat strategies that you need to take against more difficult enemies.</p>
+<p>When I started the game I was terrible; like really really bad at doing everything in the game. My roommate Pat who is much more of gamer than me played through a few puzzles and found it easy! I just wasn't really picking up on a lot of the mechanics of the game or just generally what to do.</p>
+<p>What's helped me overcome this is reading guides on how to play. The <a href="https://www.zeldadungeon.net/breath-of-the-wild-walkthrough/">Zelda Dungeon</a> guide is excellent but there are many more out there. I've also been getting more into gaming YouTube and watching other's play the game. I tend to watch speed runs and glitches but there's still some informative content in there for just playing the game normally. I've enjoyed watching lots of videos by <a href="https://www.youtube.com/channel/UC0VVYtw21rg2cokUystu2Dw">SmallAnt</a> who I think also has a big following on Twitch.</p>
+<p>Reading and watching this content has sort of made me more engrossed in the game. I now play it more regularly; at least for 30 minutes each day. I think this has also been good for my mental health.</p>
+<p>Some of the things I now now how to do which I had no idea on before include selling things at stores, what kind of things to look for in shrines to solve puzzles and just some general combat strategies you can take against enemies.</p>
+<p>I can really see now why Breath of the Wild has won so many awards and is being lauded as one of the best games ever.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Thu, 25 Feb 2021 00:31:15 +0000</pubDate>
+    </item>
+    <item>
+      <title>Useful Git Commands</title>
+      <link>https://harrisonmalone.dev/2021/02/useful-git-commands</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>We went through <code>git</code> in class today. We covered basic commands and terminology. I'll review some of those commands in this post as well as some extra commands that you might need when working on projects.</p>
+<blockquote>
+<p>How do I connect git to <a href="http://github.com/">GitHub</a>?</p>
+</blockquote>
+<ol>
+<li>
+<p>Make a new directory somewhere locally</p>
+<pre><code class="language-bash">mkdir new-project
+</code></pre>
+</li>
+<li>
+<p><code>cd</code> into that directory and run a <code>git init</code></p>
+</li>
+<li>
+<p>Add files and make code changes, these can be very basic for now</p>
+</li>
+<li>
+<p>Add and commit these changes</p>
+<pre><code class="language-bash">git add . 
+# or 
+git add &lt;filename&gt;
+
+git commit -m &quot;message&quot;
+# careful that you use only single or double quotes
+</code></pre>
+</li>
+<li>
+<p>Change the default branch to <code>main</code> with <code>git branch -M main</code></p>
+</li>
+<li>
+<p>Login to GitHub, create a new repo with the same name as your local project</p>
+</li>
+<li>
+<p>Add the remote with <code>git remote add origin &lt;remote-name&gt;</code></p>
+</li>
+<li>
+<p>Push to GitHub with <code>git push -u origin main</code></p>
+</li>
+<li>
+<p>From here on out you can make changes, commit and push as your please</p>
+</li>
+</ol>
+<blockquote>
+<p>How do I use <code>git diff</code> in VSCode?</p>
+</blockquote>
+<p>I find the output of <code>git diff</code> difficult to sometimes parse therefore I opt to use the GUI equivalent of the command in VSCode. To access this command:</p>
+<ol>
+<li>
+<p>Open your project in VSCode</p>
+</li>
+<li>
+<p>Navigate to View (it's in the menu bar) and click on SCM</p>
+</li>
+<li>
+<p>Click on the file you wish to see the <code>git diff</code> of</p>
+</li>
+</ol>
+<blockquote>
+<p>How do I delete files from a git repository?</p>
+</blockquote>
+<p>You might accidentally add a file to your source control (like a big video or image file) and push it to GitHub. To remove it from both git and GitHub you'll need to:</p>
+<ol>
+<li>
+<p>Delete the file from git</p>
+<pre><code class="language-bash">git rm --cached &lt;filename&gt;
+</code></pre>
+</li>
+<li>
+<p>Do a force push to GitHub</p>
+<pre><code class="language-bash">git push origin main --force
+</code></pre>
+</li>
+</ol>
+<blockquote>
+<p>How do I revert back to a previous commit?</p>
+</blockquote>
+<p>There are many different approaches to revert back to previous commits. The approach that I like to take is as follows:</p>
+<ol>
+<li>
+<p>Run a <code>git log</code> and copy the commit id of the commit you wish to roll back to, for example the commit id for this commit</p>
+<pre><code class="language-bash">commit 5792c92bbb0c026f46c2c6e8a993ec5c603f1165
+Author: Harrison Malone &lt;harrison.malone2@gmail.com&gt;
+Date: Tue Feb 9 11:05:34 2021 +1100
+  once again changed style and added privacy policy
+</code></pre>
+<p>is <!-- raw HTML omitted -->5792c92bbb0c026f46c2c6e8a993ec5c603f1165<!-- raw HTML omitted -->.</p>
+</li>
+<li>
+<p>Checkout to that commit and make a new branch</p>
+<pre><code class="language-bash">git checkout -b &lt;branch-name&gt; &lt;commit-id&gt;
+</code></pre>
+</li>
+<li>
+<p>In this branch you can do whatever it is you need to do, change your code, more commits etc</p>
+</li>
+<li>
+<p>When you're happy with your code in this branch you can do a couple of things, if you wish to add the branch code back to main you could</p>
+<pre><code class="language-bash">git checkout main
+git merge &lt;branch-name&gt;
+</code></pre>
+</li>
+<li>
+<p>You may get some conflicts when you run this command, resolve these conflicts in VSCode by clicking on Accept Incoming Change</p>
+</li>
+<li>
+<p>You'll then need to add and commit the conflict resolution to the main branch</p>
+</li>
+</ol>
+<blockquote>
+<p>Why did we do the SSH config?</p>
+</blockquote>
+<p>We followed the <a href="https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">GitHub SSH guide</a> to ensure that we never have to enter our password over and over when connecting to GitHub. You'll be doing this potentially hundreds of times a day as a developer so this saves us a lot of time.</p>
+<blockquote>
+<p>How do I exit out of vim?</p>
+</blockquote>
+<p>vim is a command line text editor that ships default with macOS and some Linux distributions. We aren't going to teach you how to use vim but you might inadvertently find yourself in vim. For example if you try to make a commit without the -m and <code>&quot;&quot;</code></p>
+<pre><code class="language-bash">git commit
+</code></pre>
+<p>you'll be thrown into vim. To exit out you vim you need to type <code>:q</code>.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 24 Feb 2021 23:21:04 +0000</pubDate>
+    </item>
+    <item>
+      <title>Bash</title>
+      <link>https://harrisonmalone.dev/2021/02/bash</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>In today's lesson I introduced the concept of a <code>shell</code> and specifically <a href="https://www.gnu.org/software/bash/">Bash</a> to my students. What I found to be  interesting whilst preparing for the class was reading through the <a href="https://www.gnu.org/software/bash/manual/bash.html">Bash Reference Manual</a>. I still have a lot to learn when it comes to this topic as a whole.</p>
+<p>In summary this is what I talked about:</p>
+<blockquote>
+<p>What is a shell?</p>
+</blockquote>
+<p>A shell is a user interface that accepts text and symbols from a user to execute commands on a computer. These commands are usually low level utilities that relate to files or networking. A shell is also a programming language in it's own right.</p>
+<blockquote>
+<p>How do you interact with the shell?</p>
+</blockquote>
+<p>Shells can be used interactively in a terminal via keyboard input. Shells can also be used non interactively where it executes commands from a file. A term that's often used to describe executing these kind of commands from a file is <a href="https://en.wikipedia.org/wiki/Shell_script">shell scripting</a>.</p>
+<blockquote>
+<p>What is Bash?</p>
+</blockquote>
+<p>Bash is a shell that is default to most Linux distributions. It was also the default shell on macOS until very recently (2019). It now ships with the <a href="https://www.zsh.org/">zsh shell</a> but this can be changed back to Bash. The command to do that is:</p>
+<pre><code class="language-bash">chsh -s /bin/bash
+</code></pre>
+<p><a href="https://en.wikipedia.org/wiki/Bourne_shell">sh</a> was the original shell, it shipped with an early version of the <a href="https://en.wikipedia.org/wiki/Unix">Unix operating system</a>. Bash is essentially the modern equivalent of <code>sh</code> and is compatible with it.</p>
+<blockquote>
+<p>What is Unix?</p>
+</blockquote>
+<p>Unix is an old operating system that's had a significant impact on a lot of operating systems we use today. It's often regarded as an originator in terms of file system hierarchy and permissions. There are many different forks of Unix. In <a href="https://en.wikipedia.org/wiki/Unix#/media/File:Unix_history-simple.svg">this chart</a> you can see how macOS and Linux distributions all derive from Unix.</p>
+<blockquote>
+<p>Does Windows ship with the Unix utilities?</p>
+</blockquote>
+<p>Windows doesn't inherit all the command line tools from Unix therefore it's incompatible with some of the things we do in this course. It especially will break the way some <a href="https://rubygems.org/">ruby gems</a> work. Windows is awesome for doing a lot of development work (C#, .NET) but it's not great for what we do.</p>
+<blockquote>
+<p>What are some of the Bash commands you use everyday?</p>
+</blockquote>
+<p>Here is a quick list.</p>
+<pre><code class="language-bash">cd &lt;directory&gt;
+cd ..
+pwd
+ls
+touch
+mkdir
+mv
+cp
+rm
+</code></pre>
+<p>For a full list of the commands available <a href="https://en.wikipedia.org/wiki/List_of_Unix_commands">check out this list</a>.</p>
+<blockquote>
+<p>What's a good reference for learning about the different flags (like <code>ls -a</code>) related to terminal commands?</p>
+</blockquote>
+<p><a href="https://explainshell.com/">Explain Shell</a> is an awesome website where you can paste in terminal commands and you'll get some information specifically on what each flag is for.</p>
+<blockquote>
+<p>What's the <code>.bash_profile</code> and <code>.bashrc</code>?</p>
+</blockquote>
+<p>These are configuration files for making Bash work a certain way. If you were to use the <code>zsh</code> shell you'd use a <code>.zshrc</code>.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 23 Feb 2021 03:55:07 +0000</pubDate>
+    </item>
+    <item>
+      <title>React Native And Expo Guide</title>
+      <link>https://harrisonmalone.dev/2021/02/react-native-and-expo-guide</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I recently deployed my first ever iOS app <a href="https://apps.apple.com/au/app/stradbroke/id1552595234#?platform=iphone">Stradbroke</a> to the App Store using Expo and React Native. In this guide I wanted to walk you though that process from a technical perspective.</p>
+<ol>
+<li>
+<p>Install all the tools you'll need for development, the React Native docs have a <a href="https://reactnative.dev/docs/environment-setup">good guide</a> but you'll need Node, Yarn and the Expo CLI</p>
+</li>
+<li>
+<p><a href="https://expo.io/">Expo</a> is kind of like <a href="https://github.com/facebook/create-react-app">create-react-app</a> but the native version, it's a managed workflow that configures your tool chain to use some good defaults, however it does differ in a sense that Expo also has its own SDK that hooks into system functionality like the camera and GPS</p>
+</li>
+<li>
+<p>To create a new Expo app run this command:</p>
+<pre><code class="language-bash">expo init &lt;project-name&gt;
+</code></pre>
+</li>
+<li>
+<p>You'll now have a basic scaffolded React app, the root file is <code>App.js</code></p>
+</li>
+<li>
+<p>You'll likely need to install two libraries to get going: <a href="https://reactnavigation.org/">React Navigation</a> and some sort of UI Kit like <a href="https://reactnativeelements.com/">React Native Elements</a>, React Navigation is just like <a href="https://reactrouter.com/">React Router</a> with a slightly different API, I found out the hard way that UI Kits are pretty important for native projects as whilst you can write your own CSS you're more limited with styling as opposed to what you can do on the web</p>
+</li>
+<li>
+<p>Start writing your code, the best workflow I found for debugging was running the app on my phone in the Expo client and viewing my logs in the terminal running the development server, to run the server you need to <code>yarn start</code> and then scan the QR code with your native camera app</p>
+</li>
+<li>
+<p>As you're running the app on a different device if you want to connect to a backend server (in my case Rails) you'll need to ensure that it can accept requests from anything on the network, to do that with Rails I needed to start it like this <code>rails s -b 0.0.0.0</code> and then make <code>fetch</code> requests to my IP address</p>
+</li>
+<li>
+<p>For environment variables the best system I found was <a href="https://alxmrtnz.com/thoughts/2019/03/12/environment-variables-and-workflow-in-expo.html">demonstrated here</a>, essentially you need an <code>environment.js</code> file which is <code>gitignored</code> and you import that file when you need to use any variables within it, I usually have a <code>backendUrl</code> that differs depending on if the app is running in development or staging</p>
+</li>
+<li>
+<p>You'll also need an App Icon and a Splash screen, lucky for us Expo comes with an excellent <a href="https://www.figma.com/file/ddc0glVeILssZl0Dcn1lSS/App-Icon-%26-Splash?node-id=0%3A1">Figma template</a> and <a href="https://docs.expo.io/guides/app-icons/">guide</a> on how to add these</p>
+</li>
+<li>
+<p>Once you're happy with the way everything is working you can start thinking about building and deploying the app, to run your app on Apple Platforms (even in something like <a href="https://developer.apple.com/testflight/">TestFlight</a>) you'll need to sign up <a href="https://developer.apple.com/programs/">Apple's Developer Program</a>, this was $149 AUD</p>
+</li>
+<li>
+<p>To build the app for iOS run this command:</p>
+<pre><code class="language-bash">expo build:ios --release-channel staging
+</code></pre>
+</li>
+<li>
+<p>The <code>--release-channel staging</code> args ensure that the app will build using my staging environment variables, you'll need to select the <code>archive</code> build type if you actually want the app on the App Store, you'll also need to login to your Apple account and follow the prompts, Expo has a good guide on all the <a href="https://docs.expo.io/distribution/building-standalone-apps/#if-you-choose-to-build-for-ios">different build options</a></p>
+</li>
+<li>
+<p>The build will then be queued for a while but eventually you'll be able to access a url with details about the build, on that page you can download an <code>.ipa</code> file which is a binary of the app you've built</p>
+</li>
+<li>
+<p>Head to <a href="https://appstoreconnect.apple.com">App Store Connect</a> and create a new app, if the app is built correctly in the previous step you should see a Bundle ID, you also need to pick a unique SKU which can just be the same as your Bundle ID</p>
+</li>
+<li>
+<p>To upload the <code>.ipa</code> to your App Store Connect account you need to use an app called <a href="https://apps.apple.com/us/app/transporter/id1450874784?mt=12">Transporter</a>, it's pretty simple just upload the <code>.ipa</code> file</p>
+</li>
+<li>
+<p>The app will take a bit of time to propagate on Apple's servers but eventually you should see a build available on TestFlight which you can then test yourself via your Apple email, you can also add other testers to the build</p>
+</li>
+<li>
+<p>Apple reviews every app before it's allowed in the App store, you'll need to do a few things on App Store Connect to ensure your app passes this review:</p>
+<ul>
+<li>Fill in the name, description, keywords and support url fields</li>
+<li>Add a dummy user that reviewers can sign in as</li>
+<li>Make the app free, otherwise you'll need to worry about tax, bank details and other annoying non developer things</li>
+<li>Add screenshots, these need to be specific dimensions, this <a href="https://github.com/jtholloran/shots">Figma template</a> helped a lot, just ensure your image dimensions are set to scale otherwise it won't resize properly</li>
+</ul>
+</li>
+<li>
+<p>This should now be good to go, submit the app for review and hopefully it's accepted, if you want to redeploy bump the version in the <code>app.json</code>, build the app again with <code>expo build:ios --release-channel staging</code>, download the <code>.ipa</code> and upload it to Transporter</p>
+</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Fri, 12 Feb 2021 01:06:49 +0000</pubDate>
+    </item>
+    <item>
+      <title>Day One</title>
+      <link>https://harrisonmalone.dev/2021/02/day-one</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>After a lot of trial and error I'm going to give <a href="https://dayoneapp.com/">Day One</a> a crack to be my permanent solution for storing photos alongside captions. I considered going back to Apple Photos but it was janky with so many photos. Digital photos are meant to be somewhat disposable. So I'll keep my best images from a given day and talk about them in a journal entry.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 10 Feb 2021 05:55:09 +0000</pubDate>
+    </item>
+    <item>
+      <title>Deployment</title>
+      <link>https://harrisonmalone.dev/2021/02/deployment</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>The following guide details how I deploy apps with a Rails backend and a React client side.</p>
+<ol>
+<li>
+<p>We'll start with Rails, you'll need to have a <a href="https://www.heroku.com/">Heroku</a> account and the <a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku CLI installed</a></p>
+</li>
+<li>
+<p>Create a new Heroku project, this also adds a <code>git remote</code> to push to</p>
+<pre><code class="language-bash">heroku create
+</code></pre>
+</li>
+<li>
+<p>Make changes to your Rails code, commit and push to GitHub, ensure all the latest code changes are on your <code>master</code> branch, run this command:</p>
+<pre><code class="language-bash">git push heroku master
+</code></pre>
+</li>
+<li>
+<p>You'll need to format your production database with <code>heroku run rails db:migrate</code>, if you needed to seed your database in production it's <code>heroku run rails db:seed</code></p>
+</li>
+<li>
+<p>Add a <code>RAILS_MASTER_KEY</code> to your Heroku <code>ENV</code> variables to ensure your production environment can decrypt your credentials file</p>
+</li>
+<li>
+<p>Moving back to the React client ensure you have a <code>.env.production</code> file in the root of your React project, it should look something like this:</p>
+<pre><code class="language-bash">REACT_APP_BACKEND_URL=https://aqueous-badlands-44167.herokuapp.com
+</code></pre>
+</li>
+<li>
+<p>Ensure your fetch requests are using the <code>REACT_APP_BACKEND_URL</code> variable correctly</p>
+<pre><code class="language-js">fetch(`${process.env.REACT_APP_BACKEND_URL}/your-endpoint`)
+</code></pre>
+</li>
+<li>
+<p>Add a <code>netlify.toml</code> file to the root of your React project if you're using <a href="https://reactrouter.com/web/guides/quick-start">React Router</a></p>
+<pre><code class="language-toml">[[redirects]]
+  from = &quot;/*&quot;
+  to = &quot;/index.html&quot;
+  status = 200
+</code></pre>
+</li>
+<li>
+<p>Sign up to <a href="https://www.netlify.com/">Netlify</a></p>
+</li>
+<li>
+<p>Install the <a href="https://docs.netlify.com/cli/get-started/">Netlify CLI</a>, ensure that you run <code>netlify login</code></p>
+</li>
+<li>
+<p>Add this script to your <code>package.json</code></p>
+<pre><code class="language-json">&quot;deploy&quot;: &quot;yarn build &amp;&amp; netlify deploy --prod --dir=build&quot;
+</code></pre>
+</li>
+<li>
+<p>Make changes to your React code, commit and push to GitHub, ensure all the latest code changes are on your <code>master</code> branch, run this command:</p>
+<pre><code class="language-bash">yarn run deploy
+</code></pre>
+</li>
+<li>
+<p>You'll get back a Netlify url that will be something like this:</p>
+<pre><code class="language-bash">https://brave-curie-671954.netlify.app
+</code></pre>
+</li>
+<li>
+<p>Add this url to your <code>cors.rb</code> file in your Rails project</p>
+<pre><code class="language-ruby">Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins 'https://brave-curie-671954.netlify.app'
+    resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head]
+  end
+end
+</code></pre>
+</li>
+<li>
+<p>Commit and push to GitHub, redeploy to Heroku</p>
+<pre><code class="language-bash">git push heroku master
+</code></pre>
+</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 03 Feb 2021 03:16:09 +0000</pubDate>
+    </item>
+    <item>
+      <title>Authentication Rails</title>
+      <link>https://harrisonmalone.dev/2021/02/authentication-rails</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>We'll only need two gems for handling all of our backend authentication logic.</p>
+<p><a href="https://github.com/nsarno/knock">Knock</a> is similar to <a href="https://github.com/heartcombo/devise">Devise</a> in that it will help us to authenticate users as well as manage a user's session with a JSON Web Token (JWT). We can also prevent unauthorized users from doing things they're not supposed to.</p>
+<p>Knock uses <a href="https://github.com/codahale/bcrypt-ruby">Bcrypt</a> under the hood. It will encrypt the user's password to ensure that we don't store plain text passwords in our database.</p>
+<ol>
+<li>
+<p>Add this to your Gemfile and uncomment <code>bcrypt</code>, run a <code>bundle install</code></p>
+<pre><code class="language-ruby">gem 'knock', git: 'https://github.com/nsarno/knock', branch: 'master', ref: '9214cd027422df8dc31eb67c60032fbbf8fc100b'
+</code></pre>
+</li>
+<li>
+<p>What we're missing right now is a User model, let's set that up, <code>password_digest</code> is the special field the user model needs for an encrypted password</p>
+<pre><code class="language-bash">rails g model User email:string password_digest:string
+rails db:migrate
+</code></pre>
+</li>
+<li>
+<p>Add this to our User model, the <code>has_secure_password</code> allows us to <a href="https://api.rubyonrails.org/classes/ActiveModel/SecurePassword/ClassMethods.html">set and authenticate against the bcrypt password</a>, we're also setting up some basic model validations</p>
+<pre><code class="language-rb">class User &lt; ApplicationRecord
+  has_secure_password
+  validates :email, presence: true
+end
+</code></pre>
+</li>
+<li>
+<p>Add this to our <code>application_controller</code>, the include keyword in controller allows us to use the Knock methods in all of our controllers (like authenticate_user)</p>
+<pre><code class="language-ruby">class ApplicationController &lt; ActionController::API
+  include Knock::Authenticable
+end
+</code></pre>
+</li>
+<li>
+<p>Generate a new controller named <code>user_token_controller</code></p>
+<pre><code class="language-bash">rails g controller user_token
+</code></pre>
+</li>
+<li>
+<p>Make sure your <code>user_token_controller</code> inherits from the <code>auth_token_controller</code> which is setup by knock</p>
+<pre><code class="language-rb">class UserTokenController &lt; Knock::AuthTokenController
+end
+</code></pre>
+</li>
+<li>
+<p>Create a a new file <code>config/initializers/knock.rb</code>, it contains all the config we need, as we're using the <code>secret_key_base</code> you need to ensure you have a credentials file and a <code>master.key</code>, when you deploy you'll also need to ensure the <code>RAILS_MASTER_KEY</code> is included as an ENV variable</p>
+<pre><code class="language-rb">Knock.setup do |config|
+  config.token_signature_algorithm = 'HS256'
+  config.token_secret_signature_key = -&gt; { Rails.application.credentials.secret_key_base }
+  config.token_public_key = nil
+  config.token_audience = nil
+  config.token_lifetime = 1.day
+
+  config.not_found_exception_class_name = 'ActiveRecord::RecordNotFound'
+end
+</code></pre>
+</li>
+<li>
+<p>Add this to your routes, the create action is setup by knock and we get it through the inheritance from the <code>auth_token_controller</code></p>
+<pre><code class="language-rb">post &quot;/login&quot;, to: &quot;user_token#create&quot;
+</code></pre>
+</li>
+<li>
+<p>To hit this endpoint we MUST already have a created user, run this command in <code>rails c</code></p>
+<pre><code class="language-rb">User.create(email: &quot;h@gmail.com&quot;, password: &quot;password&quot;)
+</code></pre>
+</li>
+<li>
+<p>Start your server</p>
+</li>
+<li>
+<p>Send a POST request to <code>http://localhost:3000/login</code>, add the following JSON to the body of the request</p>
+<pre><code class="language-json">{
+  &quot;auth&quot;: {
+    &quot;email&quot;: &quot;h@gmail.com&quot;,
+    &quot;password&quot;: &quot;password&quot;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p>You should a response body that looks like this</p>
+<pre><code class="language-json">{
+  &quot;jwt&quot;: &quot;eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTM0OTYzMjUsInN1YiI6MX0.ssEkAbN_ei_XzSOb7ClWwU6Ux1Zftas3GwEkow3tY-c&quot;
+}
+</code></pre>
+</li>
+<li>
+<p>You should test to see what happens if you pass a wrong email or password combination</p>
+</li>
+<li>
+<p>Generate a new controller named <code>status_controller</code>:</p>
+<pre><code class="language-bash">rails g controller status
+</code></pre>
+</li>
+<li>
+<p>Put this in the status controller, <code>before_action :authenticate_user</code> is the same as the Devise <code>before_action :authenticate_user!</code></p>
+<pre><code class="language-rb">class StatusController &lt; ApplicationController
+  before_action :authenticate_user
+
+  def index
+    render status: :ok
+  end
+end
+</code></pre>
+</li>
+<li>
+<p>Add this to your routes:</p>
+<pre><code class="language-rb">get &quot;/status&quot;, to: &quot;status#index&quot;
+</code></pre>
+</li>
+<li>
+<p>Hit the <code>/login</code> endpoint again in postman and copy the JWT</p>
+</li>
+<li>
+<p>Inside postman setup a GET request to <code>http://localhost:3000/status</code>, and add the following to your headers:</p>
+<pre><code class="language-bash">Authorization: Bearer &lt;jwt you just copied&gt;
+</code></pre>
+</li>
+<li>
+<p>Run the request and you should get something like this back:</p>
+<pre><code class="language-bash">200 ok
+</code></pre>
+</li>
+<li>
+<p>Mess with the Authorization header and see if you can get a 401 status code, refresh your memory on what a <a href="https://httpstatuses.com/401">401 means</a></p>
+</li>
+<li>
+<p>Hit the <code>/status</code> endpoint again, we should see something like this:</p>
+<pre><code class="language-json">{
+  &quot;message&quot;: &quot;logged in&quot;,
+  &quot;jwt&quot;: &quot;eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTM0OTc1MTgsInN1YiI6MX0.QxW4bYH8XwekTXQgFWkNCwCsKXSpz1PaLlgxMNyJ2Dw&quot;
+}
+</code></pre>
+</li>
+<li>
+<p>We still need an endpoint for signing up as a new user, add a <code>users_controller</code></p>
+<pre><code class="language-bash">rails g controller users
+</code></pre>
+</li>
+<li>
+<p>Add this to the controller:</p>
+<pre><code class="language-rb">class UsersController &lt; ApplicationController
+  def create
+    user = User.new(user_params)
+    if user.save 
+      render status: :created
+    else
+      render status: :bad_request
+    end
+  end
+
+  private 
+
+  def user_params 
+    params.require(:user).permit(:email, :password)
+  end 
+end
+</code></pre>
+</li>
+<li>
+<p>Add this to routes:</p>
+<pre><code class="language-rb">post &quot;/sign-up&quot;, to: &quot;users#create&quot;
+</code></pre>
+</li>
+<li>
+<p>Send a POST request to <code>http://localhost:3000/sign-up</code>, add the following JSON to the body of the request</p>
+<pre><code class="language-json">{
+  &quot;user&quot;: {
+    &quot;email&quot;: &quot;ed@gmail.com&quot;,
+    &quot;password&quot;: &quot;password&quot;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p>You should a response body that looks like this</p>
+<pre><code class="language-bash">201 created
+</code></pre>
+</li>
+<li>
+<p>We now have endpoints for logging users in and signing users up, we also have endpoints that are protected unless the user has logged in</p>
+</li>
+</ol>
+<p>If you're keen on seeing the client side implementation check out <a href="https://www.harrisonmalone.dev/2021/02/authentication-react">this post</a>.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 03 Feb 2021 01:43:40 +0000</pubDate>
+    </item>
+    <item>
+      <title>Authentication React</title>
+      <link>https://harrisonmalone.dev/2021/02/authentication-react</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>In the <a href="https://www.harrisonmalone.dev/2021/02/authentication-rails">previous post</a> we looked at how to setup authentication in a Rails backend. In this post we'll be looking at how all of this works on the client side.</p>
+<ol>
+<li>
+<p>We're going to make an API request to Rails passing the token through in the headers, Rails will then verify the validity of that token and then send back the JSON response if everything checks out, we could use our <code>/status</code> endpoint for this, we'll also need to create a <code>&lt;ProtectedRoute /&gt;</code></p>
+</li>
+<li>
+<p>Add this to a <code>ProtectedRoute.jsx</code> file:</p>
+<pre><code class="language-jsx">import React, { useState, useEffect } from &quot;react&quot;;
+import { Route, Redirect } from &quot;react-router-dom&quot;;
+import { Nav } from &quot;./Nav&quot;;
+
+export function ProtectedRoute({ exact, path, component }) {
+  const [auth, setAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    async function checkAuthStatus() {
+      try {
+        const response = await fetch(&quot;http://localhost:3000/status&quot;, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(&quot;token&quot;)}`,
+          },
+        });
+        if (response.status &gt;= 400) {
+          throw new Error(&quot;not authorized&quot;);
+        } else {
+          setAuth(true);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.log(err.message);
+        setLoading(false);
+      }
+    }
+    checkAuthStatus();
+  }, []);
+
+  if (!loading &amp;&amp; !auth) {
+    return &lt;Redirect to=&quot;/login&quot; /&gt;;
+  } else {
+    return (
+      !loading &amp;&amp; (
+        &lt;Route exact={exact} path={path} component={component} /&gt;
+      )
+    );
+  }
+}
+</code></pre>
+</li>
+<li>
+<p>Add this to <code>&lt;Navbar&gt;</code></p>
+<pre><code class="language-jsx">&lt;Link to=&quot;/secrets&quot;&gt;Secrets&lt;/Link&gt;
+</code></pre>
+</li>
+<li>
+<p>Click on the link or try typing in this url <code>http://localhost:8080/secrets</code></p>
+</li>
+<li>
+<p>In the console you'll be getting two error logs, why are we getting these logs, how are we redirecting back to the <code>/login</code> path?</p>
+</li>
+<li>
+<p>Open up Postman, login as one of your valid users and copy the JWT you get back in the HTTP response</p>
+</li>
+<li>
+<p>Go back to your browser running localhost, open your developer tools and navigate to the application tab</p>
+</li>
+<li>
+<p>Paste a key value pair into local storage like this:</p>
+<pre><code class="language-bash">token | &lt;jwt you just copied&gt;
+</code></pre>
+</li>
+<li>
+<p>Try clicking on the secrets link again, we should be able to access <code>/secrets</code></p>
+</li>
+<li>
+<p>Check your local storage token key/value and notice that the jwt changes every time we refresh the page, we're now implementing something called sliding sessions</p>
+</li>
+<li>
+<p>We can't rely on our users going into dev tools and adding a jwt to local storage themselves, we need this to happen dynamically! Remove the key/value pair in local storage and let's make two new components <code>&lt;Login /&gt;</code> and <code>&lt;SignUp /&gt;</code></p>
+</li>
+<li>
+<p>Add this to <code>&lt;Navbar /&gt;</code></p>
+<pre><code class="language-jsx">&lt;Link to=&quot;/login&quot;&gt;Login&lt;/Link&gt;
+&lt;Link to=&quot;/sign-up&quot;&gt;Sign Up&lt;/Link&gt;
+</code></pre>
+</li>
+<li>
+<p>Add this to <code>&lt;App /&gt;</code></p>
+<pre><code class="language-jsx">&lt;Route exact path=&quot;/login&quot; component={Login} /&gt;
+</code></pre>
+</li>
+<li>
+<p>Let's focus on <code>&lt;Login /&gt;</code> first, here's the component:</p>
+<pre><code class="language-jsx">import React, { useState } from &quot;react&quot;;
+import { LoggedOutNav } from './LoggedOutNav'
+
+export function Login({ history }) {
+  const [email, setEmail] = useState(&quot;&quot;);
+  const [password, setPassword] = useState(&quot;&quot;);
+  const [errMessage, setErrMessage] = useState(&quot;&quot;);
+
+  async function onFormSubmit(event) {
+    event.preventDefault();
+    const body = {
+      auth: { email, password },
+    };
+    try {
+      const response = await fetch(&quot;http://localhost:3000/login&quot;, {
+        method: &quot;POST&quot;,
+        headers: {
+          &quot;Content-Type&quot;: &quot;application/json&quot;,
+        },
+        body: JSON.stringify(body),
+      });
+      if (response.status &gt;= 400) {
+        throw new Error(&quot;incorrect credentials&quot;);
+      } else {
+        const { jwt } = await response.json();
+        localStorage.setItem(&quot;token&quot;, jwt);
+        history.push(&quot;/subscriptions&quot;);
+      }
+    } catch (err) {
+      setErrMessage(err.message);
+    }
+  }
+
+  return (
+    &lt;&gt;
+      &lt;LoggedOutNav /&gt;
+      &lt;h1&gt;Login&lt;/h1&gt;
+      {errMessage &amp;&amp; &lt;span&gt;{errMessage}&lt;/span&gt;}
+      &lt;form onSubmit={onFormSubmit}&gt;
+        &lt;label htmlFor=&quot;email&quot;&gt;Email&lt;/label&gt;
+        &lt;input
+          type=&quot;email&quot;
+          name=&quot;email&quot;
+          id=&quot;email&quot;
+          value={email}
+          onChange={(e) =&gt; setEmail(e.target.value)}
+        /&gt;
+        &lt;label htmlFor=&quot;password&quot;&gt;Password&lt;/label&gt;
+        &lt;input
+          type=&quot;password&quot;
+          name=&quot;password&quot;
+          id=&quot;password&quot;
+          value={password}
+          onChange={(e) =&gt; setPassword(e.target.value)}
+        /&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Submit&quot; /&gt;
+      &lt;/form&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+</li>
+<li>
+<p>We ensure that it's a <a href="https://reactjs.org/docs/forms.html#controlled-components">controlled component through the onChange on our inputs</a>, we set the values in state, when the form is submitted we make a POST request to Rails get the jwt and then put it into local storage before redirecting to the <code>/secrets</code> view, nice!</p>
+</li>
+<li>
+<p>Add this to <code>&lt;App /&gt;</code></p>
+<pre><code class="language-jsx">&lt;Route exact path=&quot;/sign-up&quot; component={SignUp} /&gt;
+</code></pre>
+</li>
+<li>
+<p>Let's focus on <code>&lt;SignUp /&gt;</code> below is the implementation</p>
+<pre><code class="language-jsx">import React, { useState } from &quot;react&quot;;
+import { LoggedOutNav } from './LoggedOutNav'
+
+export function SignUp({ history }) {
+  const [email, setEmail] = useState(&quot;&quot;);
+  const [password, setPassword] = useState(&quot;&quot;);
+
+  async function onFormSubmit(event) {
+    event.preventDefault();
+    try {
+      const response = await fetch(&quot;http://localhost:3000/sign-up&quot;, {
+        method: &quot;POST&quot;,
+        headers: {
+          &quot;Content-Type&quot;: &quot;application/json&quot;,
+        },
+        body: JSON.stringify({ user: { email, password } }),
+      });
+      if (response.status &gt;= 400) {
+        throw new Error(&quot;incorrect credentials&quot;);
+      } else {
+        const response = await fetch(&quot;http://localhost:3000/login&quot;, {
+          method: &quot;POST&quot;,
+          headers: {
+            &quot;Content-Type&quot;: &quot;application/json&quot;,
+          },
+          body: JSON.stringify({ auth: { email, password } }),
+        });
+        const { jwt } = await response.json();
+        localStorage.setItem(&quot;token&quot;, jwt);
+        history.push(&quot;/subscriptions&quot;);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  return (
+    &lt;&gt;
+      &lt;LoggedOutNav /&gt;
+      &lt;h1&gt;Sign Up&lt;/h1&gt;
+      &lt;form onSubmit={onFormSubmit}&gt;
+        &lt;label htmlFor=&quot;email&quot;&gt;Email&lt;/label&gt;
+        &lt;input
+          type=&quot;email&quot;
+          name=&quot;email&quot;
+          id=&quot;email&quot;
+          value={email}
+          onChange={(e) =&gt; setEmail(e.target.value)}
+        /&gt;
+        &lt;label htmlFor=&quot;password&quot;&gt;Password&lt;/label&gt;
+        &lt;input
+          type=&quot;password&quot;
+          name=&quot;password&quot;
+          id=&quot;password&quot;
+          value={password}
+          onChange={(e) =&gt; setPassword(e.target.value)}
+        /&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Submit&quot; /&gt;
+      &lt;/form&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+</li>
+<li>
+<p>It's pretty similar to <code>&lt;Login /&gt;</code> except for the logic in the <code>onFormSubmit</code>, here we make two POST requests, <code>/sign-up</code> adds a new user to the database but doesn't respond with a JWT  and then we pass the same email and password credentials to <code>/login</code> which checks for the existence of the user, validates the password and sends back a jwt which is set into local storage, we're then redirected to <code>/secrets</code></p>
+</li>
+<li>
+<p>Perhaps we want to lock down all of our routes, maybe in order for a user to create, edit and view their own subscriptions they should be logged in, let's change our routing on the client and remove <code>/secrets</code>, we could have no token in local storage</p>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+import { Route, Switch } from &quot;react-router-dom&quot;;
+import { Subscriptions } from &quot;./Subscriptions&quot;;
+import { NewSubscription } from &quot;./NewSubscription&quot;;
+import { Subscription } from &quot;./Subscription&quot;;
+import { UpdateSubscription } from &quot;../components/UpdateSubscription&quot;;
+import { Container } from &quot;../styles/App&quot;;
+import { ProtectedRoute } from &quot;./ProtectedRoute&quot;;
+import { Login } from &quot;./Login&quot;;
+import { SignUp } from &quot;./SignUp&quot;;
+
+function App() {
+  return (
+    &lt;Container&gt;
+      &lt;Switch&gt;
+        &lt;ProtectedRoute
+          exact
+          path={[&quot;/&quot;, &quot;/subscriptions&quot;]}
+          component={Subscriptions}
+        /&gt;
+        &lt;ProtectedRoute
+          exact
+          path=&quot;/subscriptions/new&quot;
+          component={NewSubscription}
+        /&gt;
+        &lt;ProtectedRoute
+          exact
+          path=&quot;/subscriptions/:id&quot;
+          component={Subscription}
+        /&gt;
+        &lt;ProtectedRoute
+          exact
+          path=&quot;/subscriptions/:id/edit&quot;
+          component={UpdateSubscription}
+        /&gt;
+        &lt;Route exact path=&quot;/login&quot; component={Login} /&gt;
+        &lt;Route exact path=&quot;/sign-up&quot; component={SignUp} /&gt;
+      &lt;/Switch&gt;
+    &lt;/Container&gt;
+  );
+}
+
+export default App;
+</code></pre>
+</li>
+<li>
+<p>Now all our <code>/subscriptions</code> routes are protected</p>
+</li>
+<li>
+<p>Delete all the subscriptions from the db</p>
+<pre><code class="language-bash">rails db:drop
+rails db:create 
+rails db:migrate
+</code></pre>
+</li>
+<li>
+<p>Let's add a user_id attribute to each subscription</p>
+<pre><code class="language-bash">rails g migration AddUserRefToSubscription user:references
+rails db:migrate
+</code></pre>
+</li>
+<li>
+<p>Add the necessary associations in our models, a user <code>has_many</code> subscriptions and subscription <code>belongs_to</code> a user</p>
+</li>
+<li>
+<p>Ensure that to access any endpoints in the <code>subscriptions_controller</code> the user must be authenticated, also use <code>current_user</code> to chain an active record commands to ensure that each subscription has a user_id, here is my <code>subscriptions_controller</code></p>
+<pre><code class="language-rb">class SubscriptionsController &lt; ApplicationController
+  before_action :authenticate_user
+  before_action :set_subscription, only: [:show, :destroy, :update]
+
+  def index 
+    subscriptions = current_user.subscriptions.order(id: &quot;asc&quot;)
+    render json: subscriptions
+  end
+
+  def show 
+    # send one subscription back
+    render json: @subscription
+  end
+
+  def create 
+    subscription = Subscription.new(subscriptions_params)
+    subscription.user_id = current_user.id
+    if subscription.save
+      render status: :created 
+    else
+      render status: :bad_request
+    end
+  end
+
+  def update 
+    if @subscription.update(subscriptions_params)
+      render status: :no_content
+    else
+      render status: :bad_request
+    end
+  end
+
+  def destroy 
+    @subscription.destroy
+  end
+
+  private 
+
+  def set_subscription 
+    @subscription = Subscription.find(params[:id])
+  end
+
+  def subscriptions_params 
+    params.require(:subscription).permit(:name, :price_per_month, :billing_period)
+  end
+end
+</code></pre>
+</li>
+<li>
+<p>We'll also now need to ensure that every single HTTP request for <code>/subscriptions</code> from the client side that goes to Rails now includes the token in the headers similar to what we implemented with <code>/status</code>, this is what my POST <code>/subscriptions</code> fetch request now looks like</p>
+<pre><code class="language-jsx">await fetch(&quot;http://localhost:3000/subscriptions&quot;, {
+  method: &quot;POST&quot;,
+  headers: {
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  },
+  body: JSON.stringify(body),
+});
+</code></pre>
+</li>
+<li>
+<p>Last but not least we need a way to logout! This can all be handled within the <code>&lt;Navbar /&gt;</code>, we are going to cheat a little bit here and use a React hook which is part of the react router library, this is what my <code>&lt;Navbar /&gt;</code> now looks like:</p>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+import { useHistory, Link } from &quot;react-router-dom&quot;;
+
+export function Nav() {
+  const history = useHistory();
+
+  function logout(e) {
+    e.preventDefault();
+    localStorage.removeItem(&quot;token&quot;);
+    history.push(&quot;/login&quot;)
+  }
+
+  return (
+    &lt;nav&gt;
+      &lt;Link to=&quot;/subscriptions&quot;&gt;Home&lt;/Link&gt;
+      &lt;Link to=&quot;/subscriptions/new&quot;&gt;New Subscription&lt;/Link&gt;
+      &lt;Link onClick={logout} to=&quot;/&quot;&gt;
+        Logout
+      &lt;/Link&gt;
+    &lt;/nav&gt;
+  );
+}
+</code></pre>
+</li>
+<li>
+<p>Cool seems like this works! Lot's of steps but we're at the end now!</p>
+</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 03 Feb 2021 01:43:20 +0000</pubDate>
+    </item>
+    <item>
+      <title>React Native Kitten</title>
+      <link>https://harrisonmalone.dev/2021/01/react-native-kitten</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>After doing some more playing around I think <a href="https://akveo.github.io/react-native-ui-kitten/docs/getting-started/what-is-ui-kitten#what-is-ui-kitten">React Native UI Kitten</a> is the way to go for building native apps. It seems more modern.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Thu, 28 Jan 2021 01:24:51 +0000</pubDate>
+    </item>
+    <item>
+      <title>Image Uploading</title>
+      <link>https://harrisonmalone.dev/2021/01/image-uploading</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>Image and file uploading from a client to a server is a really typical thing you'll need to setup in a web app. Here is a quick implementation guide on how to achieve this with React and Rails.</p>
+<p>For some context the app allows users to add dog's with a name and image.</p>
+<ol>
+<li>
+<p>Create a component that renders a form with an input file and submit, something like this, note that when the inputs change new states are set:</p>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+const [file, setFile] = useState(&quot;&quot;);
+const [name, setName] = useState(&quot;&quot;);
+
+function App() {
+  return (
+    &lt;form&gt;
+      &lt;label htmlFor=&quot;name&quot;&gt;Name&lt;/label&gt;
+      &lt;input
+        type=&quot;text&quot;
+        name=&quot;name&quot;
+        id=&quot;name&quot;
+        value={name}
+        onChange={(e) =&gt; setName(e.target.value)}
+      /&gt;
+      &lt;label htmlFor=&quot;file&quot;&gt;Dog image&lt;/label&gt;
+      &lt;input
+        type=&quot;file&quot;
+        name=&quot;file&quot;
+        id=&quot;file&quot;
+        onChange={(e) =&gt; {
+          setFile(e.target.files[0]);
+        }}
+      /&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+</li>
+<li>
+<p>Set the encType attribute of the form to be <code>multipart/form-data</code>, this ensures the fetch request is sent with this content type that is needed for files, also add an onSubmit event listener with a function that is bound to it</p>
+<pre><code class="language-jsx">&lt;form encType=&quot;multipart/form-data&quot; onSubmit={onFormSubmit}&gt;&lt;/form&gt;
+</code></pre>
+</li>
+<li>
+<p>Configure the <code>onFormSubmit</code> function, this function creates a form data object that is sent in the body of the request, we have to use form data here as we're dealing with files, JSON wouldn't work, we make a POST request to an endpoint we'll configure soon in rails and we <code>await</code> its response</p>
+<pre><code class="language-jsx">async function onFormSubmit(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append(&quot;file&quot;, file);
+  formData.append(&quot;name&quot;, name);
+  try {
+    const response = await fetch(&quot;http://localhost:3000/dogs&quot;, {
+      method: &quot;POST&quot;,
+      body: formData,
+    });
+    console.log(response);
+  } catch (err) {
+    console.log(err);
+  }
+}
+</code></pre>
+</li>
+<li>
+<p>Shifting to rails create the db and the <code>Dog</code> model that we need:</p>
+<pre><code class="language-bash">rails db:create
+rails g model Dog name
+rails db:migrate
+</code></pre>
+</li>
+<li>
+<p>Install active storage</p>
+<pre><code class="language-bash">bin/rails active_storage:install
+</code></pre>
+</li>
+<li>
+<p>Add the active storage relation to the Dog model</p>
+<pre><code class="language-ruby">has_one_attached :image
+</code></pre>
+</li>
+<li>
+<p>Create a dogs controller</p>
+<pre><code class="language-bash">rails g controller dogs
+</code></pre>
+</li>
+<li>
+<p>Add an index and create action to routes</p>
+<pre><code class="language-ruby">resources :dogs, only: [:index, :create]
+</code></pre>
+</li>
+<li>
+<p>Add the controller actions we need to the dogs_controller, we use the <code>url_for</code> method to extract the url from the active storage relation</p>
+<pre><code class="language-ruby">class DogsController &lt; ApplicationController
+  def index 
+    dogs = Dog.all.map do |dog|
+      {
+        name: dog.name,
+        image_url: url_for(dog.image)
+      }
+    end
+    render json: dogs
+  end
+
+  def create
+    dog = Dog.new(name: params[:name])
+    if dog.save
+      dog.image.attach(params[:file])
+      render status: :ok
+    else 
+      render status: :bad_request
+    end    
+  end
+end
+</code></pre>
+</li>
+<li>
+<p>Deal with cors, uncomment <code>rack-cors</code> from your gemfile and whitelist your client side url in the <code>cors.rb</code> file</p>
+</li>
+<li>
+<p>Your ready to now add an image and submit it on the client</p>
+</li>
+<li>
+<p>To see all of your dogs in an array you could open postman and make a <code>GET</code> request to <code>http://localhost:3000/dogs</code></p>
+</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 27 Jan 2021 22:42:31 +0000</pubDate>
+    </item>
+    <item>
+      <title>React Native Setup</title>
+      <link>https://harrisonmalone.dev/2021/01/react-native-setup</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>After tinkering with <a href="https://reactnative.dev/">React Native</a> over the past few weeks I think I now feel like I grasp most of the fundamentals. Something I struggled with initially was simply trying to debug code as you were now working out of the browser. This is the setup that I'm currently working with.</p>
+<ol>
+<li>
+<p>Initialize a new Expo project</p>
+<pre><code class="language-bash">expo init subscription-app-client
+</code></pre>
+</li>
+<li>
+<p>Pick a UI library to use, this is something that I feel that's even more important than developing for the web, it's very difficult to just use CSS and the components React Native gives you, I'm currently using <a href="https://callstack.github.io/react-native-paper/">React Native Paper</a> after trying <a href="https://nativebase.io/">Native Base</a></p>
+</li>
+<li>
+<p>Think about how to route between different screens, currently I'm just using state based routing and not a library like <a href="https://reactnavigation.org/">React Navigation</a></p>
+</li>
+<li>
+<p>Start the Expo server</p>
+<pre><code class="language-bash">yarn start
+</code></pre>
+</li>
+<li>
+<p>The easiest way to debug I've found is to scan the QR code that Expo gives you with your native photos app and then view all your <code>console.logs</code> in terminal, don't use the iOS simulator it's absolute trash</p>
+</li>
+<li>
+<p>To connect to a Rails backend I needed to start the server where it can bind to any IP</p>
+<pre><code class="language-bash">rails s -b 0.0.0.0
+</code></pre>
+</li>
+<li>
+<p>I also needed to setup my <code>cors.rb</code> file with my own local IP</p>
+</li>
+<li>
+<p>To make fetch requests from React I needed to fetch from my local IP to the default port 3000 which rails is running on</p>
+<pre><code class="language-js">fetch(`${IP}/subscriptions`)
+</code></pre>
+</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Wed, 27 Jan 2021 02:18:23 +0000</pubDate>
+    </item>
+    <item>
+      <title>Playing With Apple Music Data</title>
+      <link>https://harrisonmalone.dev/2021/01/playing-with-apple-music-data</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I've been playing with the <a href="https://developer.apple.com/documentation/musickitjs/">Apple Music API</a>. It really isn't very good in terms of documentation or even the data that is served. I'm going to write a blog post about how to use the API hopefully with some more detailed instructions.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Sat, 09 Jan 2021 06:51:01 +0000</pubDate>
+    </item>
+    <item>
+      <title>Jobs</title>
+      <link>https://harrisonmalone.dev/2021/01/jobs</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>I need to start looking up agencies that I'd be keen to work at and figure at what might work for me. One of the places that looks interesting was <a href="https://cogent.co/">Cogent</a>. Research some more online and on LinkedIn and start applying. That will be the only way to get the ball rolling.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Tue, 05 Jan 2021 06:04:08 +0000</pubDate>
+    </item>
+    <item>
+      <title>Photo Management</title>
+      <link>https://harrisonmalone.dev/2021/01/photo-management</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>My new process for uploading photos is something I'm decently happy with. It revolves around using my app <a href="https://memuhree.dev/">Memuhree</a> and some commands to rename images. The process works as follows.</p>
+<ol>
+<li>
+<p>I take my photos on my iPhone (or receive photos from friends and family via AirDrop) and save them to the camera roll</p>
+</li>
+<li>
+<p>I AirDrop those photos from my camera roll to my Mac via a custom iOS shortcut</p>
+</li>
+<li>
+<p>I run this script on those images which are usually just in the <code>/downloads</code> directory</p>
+<pre><code class="language-bash">exiftool '-filename&lt;CreateDate' -d '%Y-%m-%d-%H-%M-%S%%-c.%%le' .
+</code></pre>
+<p>this gives them names with dates and times such as <code>2021-01-04-12-56-36.jpeg</code></p>
+</li>
+<li>
+<p>If those images aren't renamed properly (sometimes friends use weird apps to transfer their photos and they don't include Exif data) I just use the <a href="https://renamer.com/">Renamer app</a>, the best solution is often just to use date created</p>
+</li>
+<li>
+<p>I then pick the best photo from the given day and upload it to Memuhree with a description and a location</p>
+</li>
+</ol>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Mon, 04 Jan 2021 03:39:26 +0000</pubDate>
+    </item>
+    <item>
+      <title>First Post</title>
+      <link>https://harrisonmalone.dev/2021/01/first-post</link>
+      <description></description>
+      <content:encoded><![CDATA[<p>This is my first post on the new blog.</p>
+<p>I'm hoping I can keep up a good habit of writing one web development tutorial per work with the main focus being on React and Rails.</p>
+<p>The blog is for technical posts such as:</p>
+<ul>
+<li>How to deploy with Netlify and Heroku</li>
+<li>Rails API authentication</li>
+<li>Private routes</li>
+<li>Using the AWS SDK in Rails</li>
+</ul>
+<p>My photos app is for more personal updates on what's happening in my life.</p>
+]]></content:encoded>
+      <author>Harrison Malone</author>
+      <pubDate>Fri, 01 Jan 2021 23:18:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

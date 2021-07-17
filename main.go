@@ -1,17 +1,59 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
+	"strings"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/gorilla/feeds"
 	"github.com/joho/godotenv"
+	"github.com/yuin/goldmark"
 )
+
+func reverse(s []*s3.Object) []*s3.Object {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
+}
+
+
+func createSlug(lastModified time.Time, title string) string {
+	months := map[string]string{"January": "01", "February": "02", "March": "03", "April": "04", "May": "05", "June": "06", "July": "07", "August": "08", "Sepetember": "09", "October": "10", "November": "11", "December": "12"}
+	year := lastModified.Year()
+	month := lastModified.Month().String()
+	return fmt.Sprintf("https://harrisonmalone.dev/%d/%s/%s", year, months[month], strings.TrimSuffix(title, ".txt"))
+}
+
+func createTitle(title string) string {
+	titleWithoutTxt := strings.TrimSuffix(title, ".txt")
+	titleSlice := strings.Split(titleWithoutTxt, "-")
+	var titleSliceCapitalized []string
+	for _, word := range titleSlice {
+		capitalizedWord := strings.Title(word)
+		titleSliceCapitalized = append(titleSliceCapitalized, capitalizedWord)
+	}
+	return strings.Join(titleSliceCapitalized[:], " ")
+}
+
+func createFeedItem(html string, item *s3.Object) *feeds.Item {
+	return &feeds.Item{
+		Title:       createTitle(*item.Key),
+		Link:        &feeds.Link{Href: createSlug(*item.LastModified, *item.Key)},
+		Author:      &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
+		Created:     *item.LastModified,
+		Content: html,
+	}
+}
 
 func main() {
 	err := godotenv.Load()
@@ -43,7 +85,25 @@ func main() {
 
 	downloader := s3manager.NewDownloader(newSession)
 
-	for _, item := range *&output.Contents {
+	sort.Slice(output.Contents, func(i, j int) bool {
+		currentObj := output.Contents[i]
+		nextObj := output.Contents[j]
+		return currentObj.LastModified.Before(*nextObj.LastModified)
+	})
+
+	posts := reverse(output.Contents)
+
+	now := time.Now()
+	feed := &feeds.Feed{
+			Title:       "harrisonmalone.dev blog",
+			Link:        &feeds.Link{Href: "https://harrisonmalone.dev"},
+			Description: "👋",
+			Author:      &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
+			Created:     now,
+	}
+	var feedItems []*feeds.Item
+
+	for _, item := range posts {
 		objectFilePath := fmt.Sprintf("./posts/%s", *item.Key)
 
 		file, err := os.Create(objectFilePath)
@@ -65,15 +125,30 @@ func main() {
 		}
 
 		content, err := ioutil.ReadFile(objectFilePath)
-		fmt.Println("")
-		fmt.Println(string(content))
-		fmt.Println("")
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		markdownStr := string(content)
+		var buf bytes.Buffer
+		if err := goldmark.Convert([]byte(markdownStr), &buf); err != nil {
+			panic(err)
+		}
+		html := string(buf.Bytes())
+		feedItems = append(feedItems, createFeedItem(html, item))
 	}
+	feed.Items = feedItems
+	rss, err := feed.ToRss()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	os.WriteFile("./rss.xml", []byte(rss), 0666)
 }
 
 // next steps
-// 1. sort objects by date into array
-// 2. convert strings of content into html
-// 3. create rss file
-// 4. upload rss file to netlify, write deploy script
-// 5. update frontend code to use rss data and not fetch for each file individually from s3
+// 2. create rss file
+// 3. upload rss file to netlify, write deploy script
+// 4. update frontend code to use rss data and not fetch for each file individually from s3
