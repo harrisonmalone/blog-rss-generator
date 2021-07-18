@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cp ./rss.xml ~/blog/src
+cp ~/go/src/github.com/harrisonmalone/s3-file-reader/rss.xml ~/blog/src
 cd ~/blog && yarn run deploy

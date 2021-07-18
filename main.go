@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path"
 	"sort"
 	"strings"
 	"time"
@@ -55,9 +56,10 @@ func createFeedItem(html string, item *s3.Object) *feeds.Item {
 	}
 }
 
-func main() {
-	err := godotenv.Load()
+const goFilePath string = "go/src/github.com/harrisonmalone/s3-file-reader"
 
+func main() {
+	err := godotenv.Load(path.Join(os.Getenv("HOME"), goFilePath+"/.env"))
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
@@ -104,7 +106,7 @@ func main() {
 	var feedItems []*feeds.Item
 
 	for _, item := range posts {
-		objectFilePath := fmt.Sprintf("./posts/%s", *item.Key)
+		objectFilePath := fmt.Sprintf(path.Join(os.Getenv("HOME"), goFilePath+"/posts/%s"), *item.Key)
 
 		file, err := os.Create(objectFilePath)
 
@@ -145,8 +147,9 @@ func main() {
 		fmt.Println(err.Error())
 		return
 	}
-	os.WriteFile("./rss.xml", []byte(rss), 0666)
-	cmd, err := exec.Command("./upload_rss_to_netlify").CombinedOutput()
+
+	os.WriteFile(path.Join(os.Getenv("HOME"), goFilePath+"/rss.xml"), []byte(rss), 0666)
+	cmd, err := exec.Command(path.Join(os.Getenv("HOME"), goFilePath+"/upload_rss_to_netlify")).CombinedOutput()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
