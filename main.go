@@ -50,9 +50,10 @@ func createFeedItem(html string, item *s3.Object) *feeds.Item {
 	return &feeds.Item{
 		Title:   createTitle(*item.Key),
 		Link:    &feeds.Link{Href: createSlug(*item.LastModified, *item.Key)},
-		Author:  &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
 		Created: *item.LastModified,
 		Content: html,
+		Updated: *item.LastModified,
+		Id: createSlug(*item.LastModified, *item.Key),
 	}
 }
 
@@ -98,10 +99,10 @@ func main() {
 	now := time.Now()
 	feed := &feeds.Feed{
 		Title:       "harrisonmalone.dev blog",
-		Link:        &feeds.Link{Href: "https://harrisonmalone.dev"},
+		Link:        &feeds.Link{Href: "https://harrisonmalone.dev/"},
 		Description: "👋",
 		Author:      &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
-		Created:     now,
+		Updated: now,
 	}
 	var feedItems []*feeds.Item
 
@@ -142,7 +143,7 @@ func main() {
 		feedItems = append(feedItems, createFeedItem(html, item))
 	}
 	feed.Items = feedItems
-	rss, err := feed.ToRss()
+	rss, err := feed.ToAtom()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
