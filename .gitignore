@@ -1,3 +1,4 @@
 .env
 /posts
 rss
+rss.xml
