@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"sort"
 	"strings"
 	"time"
@@ -26,7 +27,6 @@ func reverse(s []*s3.Object) []*s3.Object {
 	return s
 }
 
-
 func createSlug(lastModified time.Time, title string) string {
 	months := map[string]string{"January": "01", "February": "02", "March": "03", "April": "04", "May": "05", "June": "06", "July": "07", "August": "08", "Sepetember": "09", "October": "10", "November": "11", "December": "12"}
 	year := lastModified.Year()
@@ -47,10 +47,10 @@ func createTitle(title string) string {
 
 func createFeedItem(html string, item *s3.Object) *feeds.Item {
 	return &feeds.Item{
-		Title:       createTitle(*item.Key),
-		Link:        &feeds.Link{Href: createSlug(*item.LastModified, *item.Key)},
-		Author:      &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
-		Created:     *item.LastModified,
+		Title:   createTitle(*item.Key),
+		Link:    &feeds.Link{Href: createSlug(*item.LastModified, *item.Key)},
+		Author:  &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
+		Created: *item.LastModified,
 		Content: html,
 	}
 }
@@ -95,11 +95,11 @@ func main() {
 
 	now := time.Now()
 	feed := &feeds.Feed{
-			Title:       "harrisonmalone.dev blog",
-			Link:        &feeds.Link{Href: "https://harrisonmalone.dev"},
-			Description: "👋",
-			Author:      &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
-			Created:     now,
+		Title:       "harrisonmalone.dev blog",
+		Link:        &feeds.Link{Href: "https://harrisonmalone.dev"},
+		Description: "👋",
+		Author:      &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
+		Created:     now,
 	}
 	var feedItems []*feeds.Item
 
@@ -146,9 +146,13 @@ func main() {
 		return
 	}
 	os.WriteFile("./rss.xml", []byte(rss), 0666)
+	cmd, err := exec.Command("./upload_rss_to_netlify").CombinedOutput()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println(string(cmd))
 }
 
 // next steps
-// 2. create rss file
-// 3. upload rss file to netlify, write deploy script
-// 4. update frontend code to use rss data and not fetch for each file individually from s3
+// 1. update frontend code to use rss data and not fetch for each file individually from s3

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp ./rss.xml ~/Desktop/testing-rss-blog/src
+cd ~/Desktop/testing-rss-blog && yarn run deploy
