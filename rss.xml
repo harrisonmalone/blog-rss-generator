@@ -4,7 +4,7 @@
     <link>https://harrisonmalone.dev</link>
     <description>👋</description>
     <managingEditor>harrisonmalone@hey.com (Harrison Malone)</managingEditor>
-    <pubDate>Sun, 18 Jul 2021 11:58:38 +1000</pubDate>
+    <pubDate>Sun, 18 Jul 2021 13:09:43 +1000</pubDate>
     <item>
       <title>Blog Architecture Changes</title>
       <link>https://harrisonmalone.dev/2021/07/blog-architecture-changes</link>
@@ -23,9 +23,10 @@
 <li>Delete/add RSS file to <code>src</code> directory in blog client, deploy blog client to Netlify</li>
 </ol>
 <p>This process removes the need to have any backend. You still need to store files in some kind of cloud storage for backup purposes. S3 is suitable for this.</p>
+<p>Edit.</p>
 ]]></content:encoded>
       <author>Harrison Malone</author>
-      <pubDate>Sat, 17 Jul 2021 03:13:56 +0000</pubDate>
+      <pubDate>Sun, 18 Jul 2021 03:09:10 +0000</pubDate>
     </item>
     <item>
       <title>Lessons Learnt From Package Consolidation</title>
