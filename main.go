@@ -153,6 +153,3 @@ func main() {
 	}
 	fmt.Println(string(cmd))
 }
-
-// next steps
-// 1. update frontend code to use rss data and not fetch for each file individually from s3
