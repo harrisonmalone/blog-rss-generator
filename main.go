@@ -38,12 +38,18 @@ func createSlug(lastModified time.Time, title string) string {
 func createTitle(title string) string {
 	titleWithoutTxt := strings.TrimSuffix(title, ".txt")
 	titleSlice := strings.Split(titleWithoutTxt, "-")
-	var titleSliceCapitalized []string
+	var result []string
+	wordsToNotTitleCase := map[string]string{"ipad": "iPad", "rss": "RSS"}
 	for _, word := range titleSlice {
-		capitalizedWord := strings.Title(word)
-		titleSliceCapitalized = append(titleSliceCapitalized, capitalizedWord)
+		nonCapitalizedWord, ok := wordsToNotTitleCase[word]
+		if !ok {
+			capitalizedWord := strings.Title(word)
+			result = append(result, capitalizedWord)
+		} else {
+			result = append(result, nonCapitalizedWord)
+		}
 	}
-	return strings.Join(titleSliceCapitalized[:], " ")
+	return strings.Join(result[:], " ")
 }
 
 func createFeedItem(html string, item *s3.Object) *feeds.Item {
@@ -53,7 +59,7 @@ func createFeedItem(html string, item *s3.Object) *feeds.Item {
 		Created: *item.LastModified,
 		Content: html,
 		Updated: *item.LastModified,
-		Id: createSlug(*item.LastModified, *item.Key),
+		Id:      createSlug(*item.LastModified, *item.Key),
 	}
 }
 
@@ -102,7 +108,7 @@ func main() {
 		Link:        &feeds.Link{Href: "https://harrisonmalone.dev/"},
 		Description: "👋",
 		Author:      &feeds.Author{Name: "Harrison Malone", Email: "harrisonmalone@hey.com"},
-		Updated: now,
+		Updated:     now,
 	}
 	var feedItems []*feeds.Item
 
