@@ -39,10 +39,11 @@ func createTitle(title string) string {
 	titleWithoutTxt := strings.TrimSuffix(title, ".txt")
 	titleSlice := strings.Split(titleWithoutTxt, "-")
 	var result []string
-	wordsToNotTitleCase := map[string]string{"ipad": "iPad", "rss": "RSS", "of": "of"}
-	for _, word := range titleSlice {
+	wordsToNotTitleCase := map[string]string{"ipad": "iPad", "rss": "RSS", "of": "of", "the": "the"}
+	for index, word := range titleSlice {
 		nonCapitalizedWord, ok := wordsToNotTitleCase[word]
-		if !ok {
+		firstWordThe := index == 0 && word == "the"
+		if !ok || firstWordThe {
 			capitalizedWord := strings.Title(word)
 			result = append(result, capitalizedWord)
 		} else {
